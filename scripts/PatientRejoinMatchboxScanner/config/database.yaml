@@ -1,0 +1,10 @@
+development:
+  hostname: 127.0.0.1
+  port: 27017
+  dbname: MatchTest
+production:
+  hostname: ENTER_PRODUCTION_HOSTNAME
+  port: ENTER_PRODUCTION_PORT
+  dbname: ENTER_PRODUCTION_DBNAME
+  username: ENTER_PRODUCTION_USERNAME
+  password: ENTER_PRODUCTION_PASSWORD

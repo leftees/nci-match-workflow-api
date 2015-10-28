@@ -1,0 +1,32 @@
+development:
+  match_api:
+    scheme: http
+    hostname: 127.0.0.1
+    port: 8080
+    context: /match
+  ecog_api:
+    scheme: http
+    hostname: 127.0.0.1
+    port: 3000
+    context: /MatchInformaticsLayer
+  database:
+    hostname: 127.0.0.1
+    port: 27017
+    dbname: MatchTest
+production:
+  match_api:
+    scheme: ENTER_PRODUCTION_MATCH_API_SCHEME
+    hostname: ENTER_PRODUCTION_MATCH_API_HOSTNAME
+    port: ENTER_PRODUCTION_MATCH_API_PORT
+    context: ENTER_PRODUCTION_MATCH_API_CONTEXT
+  ecog_api:
+    scheme: ENTER_PRODUCTION_ECOG_API_SCHEME
+    hostname: ENTER_PRODUCTION_ECOG_API_SCHEME
+    port: ENTER_PRODUCTION_ECOG_API_SCHEME
+    context: ENTER_PRODUCTION_ECOG_API_SCHEME
+  database:
+    hostname: ENTER_PRODUCTION_DB_HOSTNAME
+    port: ENTER_PRODUCTION_DB_PORT
+    dbname: ENTER_PRODUCTION_DBNAME
+    username: ENTER_PRODUCTION_DB_USERNAME
+    password: ENTER_PRODUCTION_DB_PASSWORD

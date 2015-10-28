@@ -1,6 +1,6 @@
 require 'rest-client'
 
-class MatchAPIClient
+class EcogAPIClient
 
   def initialize(api_config)
     @defaults = { :scheme => 'http', :hostname => '127.0.0.1', :port => 8080, :context => '/match' }
@@ -11,22 +11,23 @@ class MatchAPIClient
     @context = get_prop(api_config, 'context')
   end
 
-  def simulate_patient_assignment(patientSequenceNumber)
-    url = build_match_context_url + "/common/rs/simulateAssignmentByPatient?patientId=#{patientSequenceNumber}"
-    RestClient.get url, {:accept => :json}
+  def send_patient_eligible_for_rejoin(patientSequenceNumbers)
+    # TODO: Need to get endpoint from ECOG
+    url = build_ecog_context_url + '/services/rs/rejoin'
+    RestClient.post url, patientSequenceNumbers.to_json, :content_type => :json, :accept => :json
   end
 
   def get_prop(db_config, key)
-    if !db_config.nil? && db_config.has_key?('match_api') && db_config['match_api'].has_key?(key)
-      return db_config['match_api'][key]
+    if !db_config.nil? && db_config.has_key?('ecog_api') && db_config['ecog_api'].has_key?(key)
+      return db_config['ecog_api'][key]
     end
     return @defaults.has_key?(key.to_s) ? @defaults[key.to_s] : nil
   end
 
-  def build_match_context_url
+  def build_ecog_context_url
     return "#{@scheme}://#{@hostname}:#{@port}#{@context}"
   end
 
-  private :get_prop, :build_match_context_url
+  private :get_prop, :build_ecog_context_url
 
 end

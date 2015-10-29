@@ -28,14 +28,14 @@ begin
   match_api = MatchAPIClient.new(cl.config)
 
   eligible_patients = []
-  off_trial_patients.each do |patientSequenceNumber|
+  off_trial_patients.each do |off_trial_patient|
     begin
-      logger.info("SCANNER | Simulating assignment for patient #{patientSequenceNumber} ...")
-      assignment_results = match_api.simulate_patient_assignment(patientSequenceNumber)
+      logger.info("SCANNER | Simulating assignment for patient #{off_trial_patient} ...")
+      assignment_results = match_api.simulate_patient_assignment(off_trial_patient[:patient_sequence_number], off_trial_patient[:anaylsis_id])
       # TODO: If we find an arm that the patient is eligible than we add it to the array
       p assignment_results
     rescue => e
-      logger.error("SCANNER | Failed to simulate assignment for patient #{patientSequenceNumber}. Message: '#{e}'")
+      logger.error("SCANNER | Failed to simulate assignment for patient #{off_trial_patient}. Message: '#{e}'")
     end
   end
 

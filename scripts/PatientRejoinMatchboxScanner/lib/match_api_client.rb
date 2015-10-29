@@ -11,8 +11,8 @@ class MatchAPIClient
     @context = get_prop(api_config, 'context')
   end
 
-  def simulate_patient_assignment(patientSequenceNumber)
-    url = build_match_context_url + "/common/rs/simulateAssignmentByPatient?patientId=#{patientSequenceNumber}"
+  def simulate_patient_assignment(patient_sequence_number, analysis_id)
+    url = build_match_context_url + "/common/rs/simulateAssignmentByPatient?patientId=#{patient_sequence_number}&anaylsisId=#{analysis_id}"
     RestClient.get url, {:accept => :json}
   end
 

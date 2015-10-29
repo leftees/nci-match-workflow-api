@@ -1,5 +1,7 @@
 require 'mongo'
 
+require "#{File.dirname(__FILE__)}/data_element_locator"
+
 class PatientDao
 
   def initialize(db_config)
@@ -18,7 +20,13 @@ class PatientDao
     results = []
     documents = @client[:patient].find(:currentPatientStatus => currentPatientStatus)
     documents.each do |document|
-      results.push(document['patientSequenceNumber'])
+      patient_sequence_number = document['patientSequenceNumber']
+      biopsy = DataElementLocator.get_latest_biopsy(document['biopsies'])
+      next_generation_sequence = DataElementLocator.get_latest_next_generation_sequence(biopsy['nextGenerationSequences'])
+      analysis_id = DataElementLocator.get_confirmed_variant_report_analysis_id(next_generation_sequence)
+      if !patient_sequence_number.nil? && !analysis_id.nil?
+        results.push({ :patient_sequence_number => patient_sequence_number, :analysis_id => analysis_id})
+      end
     end
     results
   end

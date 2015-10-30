@@ -5,15 +5,15 @@ require "#{File.dirname(__FILE__)}/data_element_locator"
 class PatientDao
 
   def initialize(db_config)
-    @defaults = { :hostname => '127.0.0.1', :port => 27017, :dbname => 'match' }
+    @defaults = { :hosts => ['127.0.0.1:27017'], :dbname => 'match' }
 
-    @hostname = get_prop(db_config, 'hostname')
+    @hosts = get_prop(db_config, 'hosts')
     @port = get_prop(db_config, 'port')
     @dbname = get_prop(db_config, 'dbname')
     @username = get_prop(db_config, 'username')
     @password = get_prop(db_config, 'password')
 
-    @client = Mongo::Client.new([ @hostname + ':' + @port.to_s ], :database => @dbname, :user => @username, :password => @password)
+    @client = Mongo::Client.new(@hosts, :database => @dbname, :user => @username, :password => @password)
   end
 
   def get_patient_by_status(currentPatientStatus)

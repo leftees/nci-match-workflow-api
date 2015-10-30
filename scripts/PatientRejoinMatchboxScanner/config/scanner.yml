@@ -1,0 +1,12 @@
+development:
+  database_config_path: ../config/mongoid-match-local.yml
+  match_api_config_path: ../config/match-api-local.yml
+  ecog_api_config_path: ../config/ecog-api-local.yml
+production_test:
+  database_config_path: /local/content/ncimatch/conf/ruby/mongoid-match-prodtest.yml
+  match_api_config_path: /local/content/ncimatch/conf/ruby/match-api-local.yml
+  ecog_api_config_path: /local/content/ncimatch/conf/ruby/ecog-api-local.yml
+production:
+  database_config_path: /local/content/ncimatch/conf/ruby/mongoid-match-prod.yml
+  match_api_config_path: /local/content/ncimatch/conf/ruby/match-api-local.yml
+  ecog_api_config_path: /local/content/ncimatch/conf/ruby/ecog-api-local.yml

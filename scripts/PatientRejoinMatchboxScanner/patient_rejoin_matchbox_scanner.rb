@@ -49,7 +49,6 @@ begin
   end
 rescue => e
   logger.error("SCANNER | Failed to complete scan because an exception was thrown. Message: '#{e}'")
-  puts e.backtrace
 end
 
 logger.info('========== Patient Rejoin Matchbox Scanner Complete ==========')

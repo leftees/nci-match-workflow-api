@@ -6,12 +6,23 @@ require "#{File.dirname(__FILE__)}/lib/patient_dao"
 require "#{File.dirname(__FILE__)}/lib/match_api_client"
 require "#{File.dirname(__FILE__)}/lib/ecog_api_client"
 
-logger = Logger.new(STDOUT)
+begin
+  LOG_LEVEL = ENV['LOG_LEVEL'].nil? ? Logger::INFO : Logger.const_get(ENV['LOG_LEVEL'])
+rescue
+  LOG_LEVEL = Logger::INFO
+end
+
+logger = Logger.new('log/patient_rejoin_matchbox_scanner.log', 3, 100 * 1024 * 1024)
+Mongo::Logger.logger = logger
+
+logger.level = LOG_LEVEL
+Mongo::Logger.logger.level = logger.level
+
 logger.info('========== Starting Patient Rejoin Matchbox Scanner ==========')
+logger.info('SCANNER | Log file written to log/patient_rejoin_matchbox_scanner.log.')
 
 begin
   clh = CommandLineHelper.new
-  # TODO: Check that the required parameters are passed in else display the usage statement
 
   logger.info("SCANNER | Command line options received #{clh.options}")
 
@@ -47,14 +58,17 @@ begin
     end
   end
 
-  if eligible_patients.size > 0
-    logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients} eligible to rejoin Matchbox ...")
-    ecog_api = EcogAPIClient.new(cl.config)
-    ecog_api.send_patient_eligible_for_rejoin(eligible_patients)
-    logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients} eligible to rejoin Matchbox complete.")
-  else
-    logger.info('SCANNER | No patients were found to be eligible to rejoin Matchbox.')
-  end
+  # Uncomment the code below when ECOG has there endpoint implemented!
+
+  #if eligible_patients.size > 0
+  #  logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients} eligible to rejoin Matchbox ...")
+  #  ecog_api = EcogAPIClient.new(cl.config)
+  #  ecog_api.send_patient_eligible_for_rejoin(eligible_patients)
+  #  logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients} eligible to rejoin Matchbox complete.")
+  #else
+  #  logger.info('SCANNER | No patients were found to be eligible to rejoin Matchbox.')
+  #end
+
 rescue => e
   logger.error("SCANNER | Failed to complete scan because an exception was thrown. Message: '#{e}'")
 end

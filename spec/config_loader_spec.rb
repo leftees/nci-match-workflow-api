@@ -4,7 +4,7 @@ require "#{File.dirname(__FILE__)}/../scripts/PatientRejoinMatchboxScanner/lib/c
 
 RSpec.describe ConfigLoader, '#initialize' do
   context 'with invalid configuration path' do
-    it 'an exception should be raised' do
+    it 'should raise an exception' do
       expect { ConfigLoader.new('../config/dummy.yml', 'development') }.to raise_error(Errno::ENOENT)
     end
   end

@@ -15,7 +15,7 @@ begin
 
   logger.info("SCANNER | Command line options received #{clh.options}")
 
-  cl = ConfigLoader.new(clh.options[:configPath], clh.options[:mode])
+  cl = ConfigLoader.new(clh.options[:configPath], clh.options[:environment])
   logger.debug("SCANNER | Database configuration #{cl.config['database']}")
   logger.debug("SCANNER | Match API configuration #{cl.config['match_api']}")
   logger.debug("SCANNER | ECOG API configuration #{cl.config['ecog_api']}")

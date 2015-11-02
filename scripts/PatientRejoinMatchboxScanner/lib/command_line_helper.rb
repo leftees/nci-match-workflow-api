@@ -9,6 +9,7 @@ class CommandLineHelper
 
   def get_options
     @options = {}
+
     optparse = OptionParser.new do |opts|
       opts.banner = 'Usage: patient_rejoin_matchbox_scanner.rb [options]'
 
@@ -16,11 +17,16 @@ class CommandLineHelper
         options[:configPath] = configPath
       end
 
-      opts.on('-m', '--mode mode', 'The mode to run the script.') do |mode|
-        options[:mode] = mode
+      opts.on('-e', '--environment environment', 'The mode to run the script.') do |environment|
+        options[:environment] = environment
       end
     end
-    optparse.parse!
+
+    begin
+      optparse.parse! ARGV
+    rescue OptionParser::InvalidOption
+      # Ignore invalid options
+    end
 
     raise OptionParser::MissingArgument.new('Missing path to yaml configuration file argument.') if options[:configPath].nil?
   end

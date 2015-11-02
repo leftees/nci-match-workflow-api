@@ -1,11 +1,11 @@
 class ConfigLoader
   attr_reader :config
 
-  def initialize(configPath, mode)
+  def initialize(configPath, environment)
     @config = {}
 
-    mode = 'development' if mode.nil?
-    scanner_config = YAML.load_file(File.join(File.dirname(__FILE__), configPath))[mode]
+    environment = 'development' if environment.nil?
+    scanner_config = YAML.load_file(File.join(File.dirname(__FILE__), configPath))[environment]
 
     load_database_config(scanner_config)
     load_match_api_config(scanner_config)

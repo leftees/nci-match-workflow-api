@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../scripts/PatientRejoinMatchboxScanner/lib/command_line_helper"
+require "#{File.dirname(__FILE__)}/../../scripts/PatientRejoinMatchboxScanner/lib/command_line_helper"
 
 RSpec.describe CommandLineHelper, '#get_options' do
   context 'with no command line options' do

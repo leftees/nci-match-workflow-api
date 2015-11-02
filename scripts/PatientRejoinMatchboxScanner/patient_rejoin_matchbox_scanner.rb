@@ -31,19 +31,27 @@ begin
   off_trial_patients.each do |off_trial_patient|
     begin
       logger.info("SCANNER | Simulating assignment for patient #{off_trial_patient} ...")
-      assignment_results = match_api.simulate_patient_assignment(off_trial_patient[:patient_sequence_number], off_trial_patient[:anaylsis_id])
-      # TODO: If we find an arm that the patient is eligible than we add it to the array
-      p assignment_results
+      assignment_results = match_api.simulate_patient_assignment(off_trial_patient[:patient_sequence_number], off_trial_patient[:analysis_id])
+      if !assignment_results.nil? && assignment_results.has_key?('results')
+        logger.debug("SCANNER | Simulating assignment for patient #{off_trial_patient} completed with results #{assignment_results['results']}")
+        assignment_results['results'].each do |arm_result|
+          if arm_result['reasonCategory'] == 'SELECTED'
+            logger.info("SCANNER | Simulation found a match between #{off_trial_patient} and  #{arm_result}")
+            eligible_patients.push(off_trial_patient[:patient_sequence_number])
+            break
+          end
+        end
+      end
     rescue => e
       logger.error("SCANNER | Failed to simulate assignment for patient #{off_trial_patient}. Message: '#{e}'")
     end
   end
 
   if eligible_patients.size > 0
-    logger.info('SCANNER | Sending ECOG a list of patients eligible to rejoin Matchbox ...')
+    logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients} eligible to rejoin Matchbox ...")
     ecog_api = EcogAPIClient.new(cl.config)
     ecog_api.send_patient_eligible_for_rejoin(eligible_patients)
-    logger.info("SCANNER | Sending ECOG a list of patients eligible #{eligible_patients} to rejoin Matchbox complete.")
+    logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients} eligible to rejoin Matchbox complete.")
   else
     logger.info('SCANNER | No patients were found to be eligible to rejoin Matchbox.')
   end

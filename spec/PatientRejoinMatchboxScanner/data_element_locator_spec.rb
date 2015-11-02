@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../scripts/PatientRejoinMatchboxScanner/lib/data_element_locator"
+require "#{File.dirname(__FILE__)}/../../scripts/PatientRejoinMatchboxScanner/lib/data_element_locator"
 
 # Test the DataElementLocator get_latest_biopsy method
 

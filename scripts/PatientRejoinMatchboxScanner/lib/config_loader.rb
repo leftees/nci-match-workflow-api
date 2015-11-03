@@ -4,7 +4,9 @@ class ConfigLoader
   def initialize(configPath, environment)
     @config = {}
 
+    environment = ENV['SCANNER_ENV'] if environment.nil? && !ENV['SCANNER_ENV'].empty?
     environment = 'development' if environment.nil?
+
     scanner_config = YAML.load_file(File.join(File.dirname(__FILE__), configPath))[environment]
 
     load_database_config(scanner_config)

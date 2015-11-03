@@ -4,6 +4,7 @@ require "#{File.dirname(__FILE__)}/lib/command_line_helper"
 require "#{File.dirname(__FILE__)}/lib/config_loader"
 require "#{File.dirname(__FILE__)}/lib/patient_dao"
 require "#{File.dirname(__FILE__)}/lib/match_api_client"
+require "#{File.dirname(__FILE__)}/lib/eligible_patient_selector"
 require "#{File.dirname(__FILE__)}/lib/ecog_api_client"
 
 begin
@@ -43,15 +44,13 @@ begin
     begin
       logger.info("SCANNER | Simulating assignment for patient #{off_trial_patient} ...")
       assignment_results = match_api.simulate_patient_assignment(off_trial_patient[:patient_sequence_number], off_trial_patient[:analysis_id])
-      if !assignment_results.nil? && assignment_results.has_key?('results')
-        logger.debug("SCANNER | Simulating assignment for patient #{off_trial_patient} completed with results #{assignment_results['results']}")
-        assignment_results['results'].each do |arm_result|
-          if arm_result['reasonCategory'] == 'SELECTED'
-            logger.info("SCANNER | Simulation found a match between #{off_trial_patient} and  #{arm_result}")
-            eligible_patients.push(off_trial_patient[:patient_sequence_number])
-            break
-          end
-        end
+      logger.debug("SCANNER | Simulating assignment for patient #{off_trial_patient} completed with results #{assignment_results['results']}")
+      selected_arm = EligiblePatientSelector.get_selected_arm(assignment_results)
+      if !selected_arm.nil?
+        logger.info("SCANNER | Simulation found a match between #{off_trial_patient} and  #{selected_arm}")
+        eligible_patients.push(off_trial_patient[:patient_sequence_number])
+      else
+        logger.info("SCANNER | Simulation did not find match an arm to patient #{off_trial_patient}.");
       end
     rescue => e
       logger.error("SCANNER | Failed to simulate assignment for patient #{off_trial_patient}. Message: '#{e}'")

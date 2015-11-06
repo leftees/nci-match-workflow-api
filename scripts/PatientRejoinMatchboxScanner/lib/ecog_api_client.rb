@@ -3,7 +3,7 @@ require 'rest-client'
 class EcogAPIClient
 
   def initialize(api_config)
-    @defaults = { :scheme => 'http', :hostname => '127.0.0.1', :port => 8080, :context => '/match' }
+    @defaults = { :scheme => 'http', :hostname => '127.0.0.1', :port => 8080, :context => '/MatchInformaticsLayer' }
 
     @scheme = get_prop(api_config, 'scheme')
     @hostname = get_prop(api_config, 'hostname')
@@ -13,7 +13,7 @@ class EcogAPIClient
 
   def send_patient_eligible_for_rejoin(patientSequenceNumbers)
     # TODO: Need to get endpoint from ECOG
-    url = build_ecog_context_url + '/services/rs/rejoin'
+    url = build_ecog_context_url + '/services/rs/rerun'
     RestClient.post url, patientSequenceNumbers.to_json, :content_type => :json, :accept => :json
   end
 

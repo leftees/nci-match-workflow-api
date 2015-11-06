@@ -57,16 +57,14 @@ begin
     end
   end
 
-  # Uncomment the code below when ECOG has there endpoint implemented!
-
-  #if eligible_patients.size > 0
-  #  logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients} eligible to rejoin Matchbox ...")
-  #  ecog_api = EcogAPIClient.new(cl.config)
-  #  ecog_api.send_patient_eligible_for_rejoin(eligible_patients)
-  #  logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients} eligible to rejoin Matchbox complete.")
-  #else
-  #  logger.info('SCANNER | No patients were found to be eligible to rejoin Matchbox.')
-  #end
+  if eligible_patients.size > 0
+    logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients} eligible to rejoin Matchbox ...")
+    ecog_api = EcogAPIClient.new(cl.config)
+    ecog_api.send_patient_eligible_for_rejoin(eligible_patients)
+    logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients} eligible to rejoin Matchbox complete.")
+  else
+    logger.info('SCANNER | No patients were found to be eligible to rejoin Matchbox.')
+  end
 
 rescue => e
   logger.error("SCANNER | Failed to complete scan because an exception was thrown. Message: '#{e}'")

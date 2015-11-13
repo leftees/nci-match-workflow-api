@@ -1,0 +1,3 @@
+class RejoinError < StandardError
+
+end

@@ -2,10 +2,10 @@ require 'sinatra/reloader' if development?
 require 'sinatra/base'
 require 'sinatra/config_file'
 
-require "#{File.dirname(__FILE__)}/model/patient"
-require "#{File.dirname(__FILE__)}/model/patient_rejoin_log"
-require "#{File.dirname(__FILE__)}/util/workflow_logger"
 require "#{File.dirname(__FILE__)}/error/rejoin_error"
+require "#{File.dirname(__FILE__)}/model/patient"
+require "#{File.dirname(__FILE__)}/util/workflow_logger"
+require "#{File.dirname(__FILE__)}/validator/rejoin_matchbox_validator"
 
 class WorkflowApi < Sinatra::Base
   register Sinatra::ConfigFile, Sinatra::Reloader
@@ -34,31 +34,24 @@ class WorkflowApi < Sinatra::Base
     content_type :json
     patientSequenceNumber = params['patientSequenceNumber']
     begin
-      data = JSON.parse(request.body.read)
+      WorkflowLogger.log.info "WORKFLOW API | Processing patient #{patientSequenceNumber} rejoin request ..."
 
-      WorkflowLogger.log.error "WORKFLOW API | Processing patient #{patientSequenceNumber} rejoin request #{data} ..."
-
-      rejoin_docs = PatientRejoinLog.where(patientSequenceNumber: patientSequenceNumber)
-      rejoin_patient = rejoin_docs[0] if !rejoin_docs.nil? && rejoin_docs.size == 1
-
-      if rejoin_patient.nil?
-        raise RejoinError, "No rejoin log entry exist for patient #{patientSequenceNumber}."
-      end
+      WorkflowLogger.log.info "WORKFLOW API | Parsing patient #{patientSequenceNumber} rejoin request payload ..."
+      request_data = JSON.parse(request.body.read)
 
       patient_docs = Patient.where(patientSequenceNumber: patientSequenceNumber)
       patient = patient_docs[0] if !patient_docs.nil? && patient_docs.size == 1
 
-      if patient.nil?
-        raise RejoinError, "Patient #{patientSequenceNumber} does not exist in Matchbox."
-      end
+      WorkflowLogger.log.info "WORKFLOW API | Validating patient #{patientSequenceNumber} rejoin eligibility ..."
+      RejoinMatchboxValidator.new(patient, request_data).validate
 
-      if patient['currentPatientStatus'] != 'OFF_TRIAL_NO_TA_AVAILABLE' || patient['currentStepNumber'] != '0'
-        raise RejoinError, "Patient #{patientSequenceNumber} current status is #{patient['currentPatientStatus']} and step number is #{patient['currentStepNumber']}."
-      end
+      WorkflowLogger.log.info "WORKFLOW API | Received patient #{patientSequenceNumber} payload #{request_data}."
+      priorRejoinDrugs = request_data['priorRejoinDrugs'] if !request_data['priorRejoinDrugs'].nil?
 
-      patient.addPriorRejoinDrugs(data)
-      patient.addRejoinPatientTrigger()
-      #patient.save!
+      patient.add_prior_drugs(priorRejoinDrugs)
+      patient.add_patient_trigger('REJOIN')
+      patient.set_rejoin_date
+      patient.save
 
       # TODO: Place the patient on RabbitMQ queue.
 
@@ -67,12 +60,24 @@ class WorkflowApi < Sinatra::Base
       patient.to_json
     rescue JSON::ParserError => error
       WorkflowLogger.log.error "WORKFLOW API | Failed to process rejoin request for #{patientSequenceNumber}. Message: #{error.message}"
+      WorkflowLogger.log.error 'WORKFLOW API | Printing backtrace:'
+      error.backtrace.each do |line|
+        WorkflowLogger.log.error "WORKFLOW API |   #{line}"
+      end
       status 400
     rescue RejoinError => error
       WorkflowLogger.log.error "WORKFLOW API | Failed to process rejoin request for #{patientSequenceNumber}. Message: #{error.message}"
+      WorkflowLogger.log.error 'WORKFLOW API | Printing backtrace:'
+      error.backtrace.each do |line|
+        WorkflowLogger.log.error "WORKFLOW API |   #{line}"
+      end
       status 400
     rescue => error
       WorkflowLogger.log.error "WORKFLOW API | Failed to process rejoin request for #{patientSequenceNumber}. Message: #{error.message}"
+      WorkflowLogger.log.error 'WORKFLOW API | Printing backtrace:'
+      error.backtrace.each do |line|
+        WorkflowLogger.log.error "WORKFLOW API |   #{line}"
+      end
       status 500
     end
   end

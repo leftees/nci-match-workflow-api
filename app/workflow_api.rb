@@ -4,6 +4,8 @@ require 'sinatra/config_file'
 
 require "#{File.dirname(__FILE__)}/error/rejoin_error"
 require "#{File.dirname(__FILE__)}/model/patient"
+require "#{File.dirname(__FILE__)}/model/transaction_message"
+require "#{File.dirname(__FILE__)}/queue/rabbit_mq_publisher"
 require "#{File.dirname(__FILE__)}/util/workflow_logger"
 require "#{File.dirname(__FILE__)}/validator/rejoin_matchbox_validator"
 
@@ -48,16 +50,17 @@ class WorkflowApi < Sinatra::Base
       WorkflowLogger.log.info "WORKFLOW API | Received patient #{patientSequenceNumber} payload #{request_data}."
       priorRejoinDrugs = request_data['priorRejoinDrugs'] if !request_data['priorRejoinDrugs'].nil?
 
+      WorkflowLogger.log.info "WORKFLOW API | Persisting patient #{patientSequenceNumber} rejoin status ..."
       patient.add_prior_drugs(priorRejoinDrugs)
       patient.add_patient_trigger('REJOIN')
       patient.set_rejoin_date
       patient.save
 
-      # TODO: Place the patient on RabbitMQ queue.
+      WorkflowLogger.log.info "WORKFLOW API | Enqueuing patient #{patientSequenceNumber} for treatment assignment ..."
+      RabbitMQPublisher.new.enqueue_patient(patientSequenceNumber)
 
       WorkflowLogger.log.info "WORKFLOW API | Processing patient rejoin request for #{patientSequenceNumber} complete."
-
-      patient.to_json
+      TransactionMessage.new('SUCCESS', "Rejoin request for patient #{patientSequenceNumber} completed.").to_json
     rescue JSON::ParserError => error
       WorkflowLogger.log.error "WORKFLOW API | Failed to process rejoin request for #{patientSequenceNumber}. Message: #{error.message}"
       WorkflowLogger.log.error 'WORKFLOW API | Printing backtrace:'
@@ -65,6 +68,7 @@ class WorkflowApi < Sinatra::Base
         WorkflowLogger.log.error "WORKFLOW API |   #{line}"
       end
       status 400
+      body TransactionMessage.new('FAILURE', "Invalid rejoin request received. Message: #{error.message}").to_json
     rescue RejoinError => error
       WorkflowLogger.log.error "WORKFLOW API | Failed to process rejoin request for #{patientSequenceNumber}. Message: #{error.message}"
       WorkflowLogger.log.error 'WORKFLOW API | Printing backtrace:'
@@ -72,6 +76,7 @@ class WorkflowApi < Sinatra::Base
         WorkflowLogger.log.error "WORKFLOW API |   #{line}"
       end
       status 400
+      body TransactionMessage.new('FAILURE', "Invalid rejoin request received. Message: #{error.message}").to_json
     rescue => error
       WorkflowLogger.log.error "WORKFLOW API | Failed to process rejoin request for #{patientSequenceNumber}. Message: #{error.message}"
       WorkflowLogger.log.error 'WORKFLOW API | Printing backtrace:'
@@ -79,6 +84,7 @@ class WorkflowApi < Sinatra::Base
         WorkflowLogger.log.error "WORKFLOW API |   #{line}"
       end
       status 500
+      body TransactionMessage.new('FAILURE', "Matchbox Server Internal Error. Message: #{error.message}").to_json
     end
   end
 

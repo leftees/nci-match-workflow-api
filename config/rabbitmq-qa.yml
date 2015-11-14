@@ -1,0 +1,11 @@
+development:
+  clients:
+    default:
+      hosts:
+        - ncias-p1519-v:5672
+        - ncias-p1529-v:5672
+        - ncias-p1537-v:5672
+      vhost: matchTest
+      username: matchTest
+      password: N0deTest3
+      queue_name: matchTestQueue

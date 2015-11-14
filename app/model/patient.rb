@@ -39,11 +39,17 @@ class Patient
   end
 
   def set_rejoin_date
-    updated_rejoin_triggers = []
     rejoin_trigger = self['patientRejoinTriggers'][self['patientRejoinTriggers'].size - 1]
     rejoin_trigger['dateRejoined'] = DateTime.now
-    updated_rejoin_triggers += self['patientRejoinTriggers']
-    self['patientRejoinTriggers'] = updated_rejoin_triggers
+    self['patientRejoinTriggers'].pop
+    self['patientRejoinTriggers'] += [{
+        'treatmentArmId': rejoin_trigger['treatmentArmId'],
+        'treatmentArmVersion': rejoin_trigger['treatmentArmVersion'],
+        'assignmentReason': rejoin_trigger['assignmentReason'],
+        'dateScanned': rejoin_trigger['dateScanned'],
+        'dateSentToECOG': rejoin_trigger['dateSentToECOG'],
+        'dateRejoined': rejoin_trigger['dateRejoined']
+    }]
     self
   end
 end

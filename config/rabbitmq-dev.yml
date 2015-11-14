@@ -1,0 +1,6 @@
+development:
+  clients:
+    default:
+      hosts:
+        - localhost:5672
+      queue_name: matchTest

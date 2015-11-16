@@ -3,12 +3,12 @@ require 'bunny'
 require "#{File.dirname(__FILE__)}/../util/workflow_logger"
 
 class RabbitMQPublisher
-  def enqueue_patient(patientSequenceNumber)
+  def enqueue_message(message)
     begin
       WorkflowLogger.log.info 'WORKFLOW API | Connecting to RabbitMQ ...'
       connect
-      WorkflowLogger.log.info "WORKFLOW API | Enqueuing patient #{patientSequenceNumber} on #{RabbitMQ.queue_name}."
-      publish(patientSequenceNumber)
+      WorkflowLogger.log.info "WORKFLOW API | Enqueuing message #{message.to_json} on #{RabbitMQ.queue_name}."
+      publish(message)
     ensure
       if @conn
         WorkflowLogger.log.info 'WORKFLOW API | Closing RabbitMQ connection ... '
@@ -39,17 +39,17 @@ class RabbitMQPublisher
     end
   end
 
-  def publish(patientSequenceNumber)
+  def publish(message)
     enqueue_tries = 0
     while enqueue_tries < 3 do
       begin
         channel = @conn.create_channel
         queue = channel.queue(RabbitMQ.queue_name, :durable => true)
         exchange  = channel.default_exchange
-        exchange.publish(patientSequenceNumber, :routing_key => queue.name)
+        exchange.publish(message.to_json, :routing_key => queue.name)
         break
       rescue => error
-        WorkflowLogger.log.error "WORKFLOW API | Failed to enqueue patient #{patientSequenceNumber}. Message: #{error.message}"
+        WorkflowLogger.log.error "WORKFLOW API | Failed to enqueue patient #{message.to_json}. Message: #{error.message}"
         WorkflowLogger.log.error 'WORKFLOW API | Printing backtrace:'
         error.backtrace.each do |line|
           WorkflowLogger.log.error "WORKFLOW API |   #{line}"

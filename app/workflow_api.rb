@@ -4,6 +4,7 @@ require 'sinatra/config_file'
 
 require "#{File.dirname(__FILE__)}/error/rejoin_error"
 require "#{File.dirname(__FILE__)}/model/patient"
+require "#{File.dirname(__FILE__)}/model/patient_assignment_queue_message"
 require "#{File.dirname(__FILE__)}/model/transaction_message"
 require "#{File.dirname(__FILE__)}/queue/rabbit_mq_publisher"
 require "#{File.dirname(__FILE__)}/util/workflow_logger"
@@ -57,7 +58,7 @@ class WorkflowApi < Sinatra::Base
       patient.save
 
       WorkflowLogger.log.info "WORKFLOW API | Enqueuing patient #{patientSequenceNumber} for treatment assignment ..."
-      RabbitMQPublisher.new.enqueue_patient(patientSequenceNumber)
+      RabbitMQPublisher.new.enqueue_message(PatientAssignmentQueueMessage.new(patientSequenceNumber))
 
       WorkflowLogger.log.info "WORKFLOW API | Processing patient rejoin request for #{patientSequenceNumber} complete."
       TransactionMessage.new('SUCCESS', "Rejoin request for patient #{patientSequenceNumber} completed.").to_json

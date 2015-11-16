@@ -1,5 +1,7 @@
-default:
-  scheme: http
-  hostname: 127.0.0.1
-  port: 3000
-  context: /MatchInformaticsLayer
+development:
+  clients:
+    default:
+      scheme: http
+      hosts:
+        - 127.0.0.1:3000
+      context: /MatchInformaticsLayer

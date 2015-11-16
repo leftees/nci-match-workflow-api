@@ -1,8 +1,9 @@
-clients:
-  default:
-    database: MatchTest
-    hosts:
-      - 127.0.0.1:27017
-    options:
-      user: MatchTest
-      password: MatchTest
+development:
+  clients:
+    default:
+      database: MatchTest
+      hosts:
+        - 127.0.0.1:27017
+      options:
+        user: MatchTest
+        password: MatchTest

@@ -3,11 +3,10 @@ require 'rest-client'
 class MatchAPIClient
 
   def initialize(api_config)
-    @defaults = { :scheme => 'http', :hostname => '127.0.0.1', :port => 8080, :context => '/match' }
+    @defaults = { :scheme => 'http', :hosts => ['127.0.0.1:8080'], :context => '/match' }
 
     @scheme = get_prop(api_config, 'scheme')
-    @hostname = get_prop(api_config, 'hostname')
-    @port = get_prop(api_config, 'port')
+    @hosts = get_prop(api_config, 'hosts')
     @context = get_prop(api_config, 'context')
   end
 
@@ -24,7 +23,7 @@ class MatchAPIClient
   end
 
   def build_match_context_url
-    return "#{@scheme}://#{@hostname}:#{@port}#{@context}"
+    return "#{@scheme}://#{@hosts[0]}#{@context}"
   end
 
   private :get_prop, :build_match_context_url

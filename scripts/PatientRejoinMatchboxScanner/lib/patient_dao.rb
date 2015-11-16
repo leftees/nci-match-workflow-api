@@ -17,19 +17,25 @@ class PatientDao
   end
 
   def get_patient_by_status(currentPatientStatus)
-    results = []
+    results = { 'off_trial_patients' => [], 'off_trial_patients_docs' => [] }
     documents = @client[:patient].find(:currentPatientStatus => currentPatientStatus)
     documents.each do |document|
       next if document['currentStepNumber'] != '0'
+      next if !document['patientRejoinTriggers'].nil? && document['patientRejoinTriggers'].size > 0 && document['patientRejoinTriggers'][document['patientRejoinTriggers'].size - 1]['dateRejoined'].nil?
       patient_sequence_number = document['patientSequenceNumber']
       biopsy = DataElementLocator.get_latest_biopsy(document['biopsies'])
       next_generation_sequence = DataElementLocator.get_latest_next_generation_sequence(biopsy['nextGenerationSequences'])
       analysis_id = DataElementLocator.get_confirmed_variant_report_analysis_id(next_generation_sequence)
       if !patient_sequence_number.nil? && !analysis_id.nil?
-        results.push({ :patient_sequence_number => patient_sequence_number, :analysis_id => analysis_id})
+        results['off_trial_patients'].push({ :patient_sequence_number => patient_sequence_number, :analysis_id => analysis_id })
+        results['off_trial_patients_docs'].push(document)
       end
     end
     results
+  end
+
+  def update(patient_doc)
+    @client[:patient].update_one({'_id' => patient_doc['_id']}, patient_doc)
   end
 
   def get_prop(db_config, key)

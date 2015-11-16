@@ -1,6 +1,8 @@
-default:
-  scheme: http
-  hostname: 127.0.0.1
-  port: 8080
-  context: /match
+development:
+  clients:
+    default:
+      scheme: http
+      hosts:
+        - 127.0.0.1:8080
+      context: /match
 

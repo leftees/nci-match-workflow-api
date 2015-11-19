@@ -44,7 +44,9 @@ class RabbitMQ
         :hosts => @@hosts,
         :vhost => @@vhost,
         :user => @@username,
-        :password => @@password
+        :password => @@password,
+        :logger => WorkflowLogger.logger,
+        :log_level => EnvHelper.log_level
     }
   end
 end

@@ -1,8 +1,6 @@
 class PatientAssignmentQueueMessage
-
   def initialize(patientSequenceNumber)
     @header = { 'type' => 'PATIENT_ASSIGNMENT', 'dateCreated' => DateTime.now }
-    @data = { 'patientSequenceNumber' =>  patientSequenceNumber}
+    @data = { 'patientSequenceNumber' =>  patientSequenceNumber }
   end
-
 end

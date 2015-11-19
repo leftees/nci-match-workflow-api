@@ -5,20 +5,20 @@ require "#{File.dirname(__FILE__)}/../util/workflow_logger"
 class RabbitMQPublisher
   def enqueue_message(message)
     begin
-      WorkflowLogger.log.info 'WORKFLOW API | Connecting to RabbitMQ ...'
+      WorkflowLogger.logger.info 'WORKFLOW API | Connecting to RabbitMQ ...'
       connect
-      WorkflowLogger.log.info "WORKFLOW API | Enqueuing message #{message.to_json} on #{RabbitMQ.queue_name}."
+      WorkflowLogger.logger.info "WORKFLOW API | Enqueuing message #{message.to_json} on #{RabbitMQ.queue_name}."
       publish(message)
     ensure
       if @conn
-        WorkflowLogger.log.info 'WORKFLOW API | Closing RabbitMQ connection ... '
+        WorkflowLogger.logger.info 'WORKFLOW API | Closing RabbitMQ connection ... '
         @conn.close
       end
     end
   end
 
   def connect
-    WorkflowLogger.log.debug "WORKFLOW API | Using RabbitMQ connection config: #{RabbitMQ.connection_config}"
+    WorkflowLogger.logger.debug "WORKFLOW API | Using RabbitMQ connection config: #{RabbitMQ.connection_config}"
 
     conn_tries = 0
     while conn_tries < 3 do
@@ -27,10 +27,10 @@ class RabbitMQPublisher
         @conn.start
         break
       rescue => error
-        WorkflowLogger.log.error "WORKFLOW API | Failed to connect to RabbitMQ. Message: #{error.message}"
-        WorkflowLogger.log.error 'WORKFLOW API | Printing backtrace:'
+        WorkflowLogger.logger.error "WORKFLOW API | Failed to connect to RabbitMQ. Message: #{error.message}"
+        WorkflowLogger.logger.error 'WORKFLOW API | Printing backtrace:'
         error.backtrace.each do |line|
-          WorkflowLogger.log.error "WORKFLOW API |   #{line}"
+          WorkflowLogger.logger.error "WORKFLOW API |   #{line}"
         end
         conn_tries += 1
         raise error if conn_tries >= 3
@@ -49,10 +49,10 @@ class RabbitMQPublisher
         exchange.publish(message.to_json, :routing_key => queue.name)
         break
       rescue => error
-        WorkflowLogger.log.error "WORKFLOW API | Failed to enqueue patient #{message.to_json}. Message: #{error.message}"
-        WorkflowLogger.log.error 'WORKFLOW API | Printing backtrace:'
+        WorkflowLogger.logger.error "WORKFLOW API | Failed to enqueue patient #{message.to_json}. Message: #{error.message}"
+        WorkflowLogger.logger.error 'WORKFLOW API | Printing backtrace:'
         error.backtrace.each do |line|
-          WorkflowLogger.log.error "WORKFLOW API |   #{line}"
+          WorkflowLogger.logger.error "WORKFLOW API |   #{line}"
         end
         enqueue_tries += 1
         raise error if enqueue_tries >= 3

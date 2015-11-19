@@ -16,15 +16,15 @@ RSpec.describe ConfigLoader, '#initialize' do
 
       expect(parsed_config['database']['hosts']).to eq(['127.0.0.1:27017'])
       expect(parsed_config['database']['dbname']).to eq('MatchTest')
+      expect(parsed_config['database']['username']).to eq('MatchTest')
+      expect(parsed_config['database']['password']).to eq('MatchTest')
 
       expect(parsed_config['match_api']['scheme']).to eq('http')
-      expect(parsed_config['match_api']['hostname']).to eq('127.0.0.1')
-      expect(parsed_config['match_api']['port']).to eq(8080)
+      expect(parsed_config['match_api']['hosts']).to eq(['127.0.0.1:8080'])
       expect(parsed_config['match_api']['context']).to eq('/match')
 
       expect(parsed_config['ecog_api']['scheme']).to eq('http')
-      expect(parsed_config['ecog_api']['hostname']).to eq('127.0.0.1')
-      expect(parsed_config['ecog_api']['port']).to eq(3000)
+      expect(parsed_config['ecog_api']['hosts']).to eq(['127.0.0.1:3000'])
       expect(parsed_config['ecog_api']['context']).to eq('/MatchInformaticsLayer')
     end
   end

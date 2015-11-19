@@ -3,4 +3,4 @@ development:
     default:
       hosts:
         - localhost:5672
-      queue_name: matchTest
+      queue_name: test_task_queue

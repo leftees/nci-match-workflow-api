@@ -1,3 +1,5 @@
 .idea
+Gemfile.lock
 log
+coverage
 scripts/PatientRejoinMatchboxScanner/log

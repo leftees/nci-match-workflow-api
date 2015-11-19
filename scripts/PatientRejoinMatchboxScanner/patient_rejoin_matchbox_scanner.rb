@@ -8,7 +8,7 @@ require "#{File.dirname(__FILE__)}/lib/eligible_patient_selector"
 require "#{File.dirname(__FILE__)}/lib/ecog_api_client"
 
 begin
-  LOG_LEVEL = ENV['LOG_LEVEL'].nil? ? Logger::INFO : Logger.const_get(ENV['LOG_LEVEL'])
+  LOG_LEVEL = ENV['LOG_LEVEL'].nil? ? Logger::DEBUG : Logger.const_get(ENV['LOG_LEVEL'])
 rescue
   LOG_LEVEL = Logger::INFO
 end
@@ -54,15 +54,36 @@ begin
         if patient_doc['patientRejoinTriggers'].nil?
           patient_doc['patientRejoinTriggers'] = []
         end
-        trigger = {
-            'treatmentArmId' => selected_arm['treatmentArmId'],
-            'treatmentArmVersion' => selected_arm['treatmentArmVersion'],
-            'assignmentReason' => selected_arm['reason'],
-            'dateScanned' => DateTime.now
-        }
-        patient_doc['patientRejoinTriggers'].push(trigger)
 
-        eligible_patients['patient_docs'].push(off_trial_patients['off_trial_patients_docs'][index])
+        trigger = nil
+        if patient_doc['patientRejoinTriggers'].size > 0
+          trigger = patient_doc['patientRejoinTriggers'][patient_doc['patientRejoinTriggers'].size - 1]
+        end
+
+        is_eligible = false
+        if trigger.nil? || !trigger['dateRejoined'].nil?
+          logger.info("SCANNER | Creating new rejoin trigger for patient #{off_trial_patient[:patient_sequence_number]} and #{selected_arm} ...")
+          trigger = {
+              'treatmentArmId' => selected_arm['treatmentArmId'],
+              'treatmentArmVersion' => selected_arm['treatmentArmVersion'],
+              'assignmentReason' => selected_arm['reason'],
+              'dateScanned' => DateTime.now
+          }
+          patient_doc['patientRejoinTriggers'].push(trigger)
+          is_eligible = true
+        else
+          logger.info("SCANNER | Comparing selected treatment arms for patient #{off_trial_patient[:patient_sequence_number]} ...")
+          if trigger['treatmentArmId'] != selected_arm['treatmentArmId']
+            logger.info("SCANNER | Updating existing rejoin trigger for patient #{off_trial_patient[:patient_sequence_number]} and #{trigger['treatmentArmId']} => #{selected_arm['treatmentArmId']} ...")
+            trigger['treatmentArmId'] = selected_arm['treatmentArmId']
+            trigger['treatmentArmVersion'] = selected_arm['treatmentArmVersion']
+            trigger['assignmentReason'] = selected_arm['reason']
+            trigger['dateScanned'] = DateTime.now
+            is_eligible = true
+          end
+        end
+
+        eligible_patients['patient_docs'].push(off_trial_patients['off_trial_patients_docs'][index]) if is_eligible
       else
         logger.info("SCANNER | Simulation did not find a matching arm for patient #{off_trial_patient}.");
       end
@@ -77,12 +98,12 @@ begin
 
   if eligible_patients['patient_sequence_numbers'].size > 0
     logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients['patient_sequence_numbers']} eligible to rejoin Matchbox ...")
-    ecog_api = EcogAPIClient.new(cl.config)
-    ecog_api.send_patient_eligible_for_rejoin(eligible_patients['patient_sequence_numbers'])
+    #ecog_api = EcogAPIClient.new(cl.config)
+    #ecog_api.send_patient_eligible_for_rejoin(eligible_patients['patient_sequence_numbers'])
     logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients['patient_sequence_numbers']} eligible to rejoin Matchbox complete.")
 
     eligible_patients['patient_docs'].each do |patient_doc|
-      logger.info("SCANNER | Adding patient #{patient_doc['patientSequenceNumber']} rejoin trigger #{patient_doc['patientRejoinTriggers'][patient_doc['patientRejoinTriggers'].size - 1]} ...")
+      logger.info("SCANNER | Adding/Updating patient #{patient_doc['patientSequenceNumber']} rejoin trigger #{patient_doc['patientRejoinTriggers'][patient_doc['patientRejoinTriggers'].size - 1]} ...")
       patient_doc['patientRejoinTriggers'][patient_doc['patientRejoinTriggers'].size - 1]['dateSentToECOG'] = DateTime.now
       result = dao.update(patient_doc)
       if result.n == 1

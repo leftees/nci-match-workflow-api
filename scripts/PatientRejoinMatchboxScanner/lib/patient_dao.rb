@@ -21,7 +21,7 @@ class PatientDao
     documents = @client[:patient].find(:currentPatientStatus => currentPatientStatus)
     documents.each do |document|
       next if document['currentStepNumber'] != '0'
-      next if !document['patientRejoinTriggers'].nil? && document['patientRejoinTriggers'].size > 0 && document['patientRejoinTriggers'][document['patientRejoinTriggers'].size - 1]['dateRejoined'].nil?
+      #next if !document['patientRejoinTriggers'].nil? && document['patientRejoinTriggers'].size > 0 && document['patientRejoinTriggers'][document['patientRejoinTriggers'].size - 1]['dateRejoined'].nil?
       patient_sequence_number = document['patientSequenceNumber']
       biopsy = DataElementLocator.get_latest_biopsy(document['biopsies'])
       next_generation_sequence = DataElementLocator.get_latest_next_generation_sequence(biopsy['nextGenerationSequences'])

@@ -2,6 +2,7 @@ require "#{File.dirname(__FILE__)}/../spec_helper"
 require "#{File.dirname(__FILE__)}/../../scripts/PatientRejoinMatchboxScanner/lib/match_api_client"
 
 RSpec.describe MatchAPIClient, '#simulate_patient_assignment' do
+
   before(:each) do
     @api_config = {
         'match_api' => {

@@ -17,6 +17,11 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
+require 'webmock/rspec'
+
+# Disable external http request
+WebMock.disable_net_connect!(allow_localhost: true)
+
 require 'simplecov'
 require 'simplecov-json'
 require 'simplecov-rcov'

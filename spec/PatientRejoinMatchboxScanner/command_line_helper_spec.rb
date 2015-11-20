@@ -2,7 +2,7 @@ require "#{File.dirname(__FILE__)}/../../scripts/PatientRejoinMatchboxScanner/li
 
 RSpec.describe CommandLineHelper, '#get_options' do
   context 'with no command line options' do
-    it 'should raise and exception' do
+    it 'should raise an exception' do
       expect { CommandLineHelper.new }.to raise_error(OptionParser::MissingArgument)
     end
   end

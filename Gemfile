@@ -14,6 +14,7 @@ gem 'rest-client', '1.8.0'
 
 group :test do
   gem 'rspec', '3.3.0'
+  gem 'webmock', '1.22.3'
   gem 'simplecov', '0.10.0'
   gem 'simplecov-json', '0.2'
   gem 'simplecov-rcov', '0.2.3'

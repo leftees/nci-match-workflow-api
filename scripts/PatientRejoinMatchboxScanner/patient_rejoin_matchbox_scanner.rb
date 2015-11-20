@@ -98,8 +98,8 @@ begin
 
   if eligible_patients['patient_sequence_numbers'].size > 0
     logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients['patient_sequence_numbers']} eligible to rejoin Matchbox ...")
-    #ecog_api = EcogAPIClient.new(cl.config)
-    #ecog_api.send_patient_eligible_for_rejoin(eligible_patients['patient_sequence_numbers'])
+    ecog_api = EcogAPIClient.new(cl.config)
+    ecog_api.send_patient_eligible_for_rejoin(eligible_patients['patient_sequence_numbers'])
     logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients['patient_sequence_numbers']} eligible to rejoin Matchbox complete.")
 
     eligible_patients['patient_docs'].each do |patient_doc|

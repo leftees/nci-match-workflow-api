@@ -91,7 +91,7 @@ RSpec.describe PatientDao, '#get_patient_by_status' do
 
   before(:each) do
     @db_config = {
-        'ecog_api' => {
+        'database' => {
             'hosts' => ['127.0.0.1:9000'],
             'dbname' => 'matchUnitTest'
         }
@@ -152,7 +152,7 @@ RSpec.describe PatientDao, '#update' do
 
   before(:each) do
     @db_config = {
-        'ecog_api' => {
+        'database' => {
             'hosts' => ['127.0.0.1:9000'],
             'dbname' => 'matchUnitTest'
         }

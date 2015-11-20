@@ -66,7 +66,7 @@ RSpec.describe EcogAPIClient, '#send_patient_eligible_for_rejoin' do
   end
 
   context 'with a multiple patient sequence numbers to a non-existent endpoint' do
-    it 'should receive a internal server error' do
+    it 'should receive a resource not found error' do
       stub_request(:post, 'https://ecoghost/MatchInformaticsLayer/services/rs/rerun').
           with(:body => "[\"123\",\"456\",\"789\"]",
                :headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Content-Length'=>'19', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby'}).
@@ -78,7 +78,7 @@ RSpec.describe EcogAPIClient, '#send_patient_eligible_for_rejoin' do
   end
 
   context 'with a multiple patient sequence numbers with a bad request' do
-    it 'should receive a internal server error' do
+    it 'should receive a bad request error' do
       stub_request(:post, 'https://ecoghost/MatchInformaticsLayer/services/rs/rerun').
           with(:body => "[\"123\",\"456\",\"789\"]",
                :headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Content-Length'=>'19', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby'}).

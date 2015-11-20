@@ -3,7 +3,7 @@ require 'rest-client'
 class EcogAPIClient
 
   def initialize(api_config)
-    @defaults = { :scheme => 'http', :hosts => ['127.0.0.1:8080'], :context => '/MatchInformaticsLayer' }
+    @defaults = { :scheme => 'http', :hosts => ['127.0.0.1:3000'], :context => '/MatchInformaticsLayer' }
 
     @scheme = get_prop(api_config, 'scheme')
     @hosts = get_prop(api_config, 'hosts')
@@ -23,7 +23,7 @@ class EcogAPIClient
     if !api_config.nil? && api_config.has_key?('ecog_api') && api_config['ecog_api'].has_key?(key)
       return api_config['ecog_api'][key]
     end
-    return @defaults.has_key?(key.to_s) ? @defaults[key.to_s] : nil
+    return @defaults.has_key?(key.to_sym) ? @defaults[key.to_sym] : nil
   end
 
   def build_ecog_context_url

@@ -38,6 +38,21 @@ RSpec.describe EcogAPIClient, '#send_patient_eligible_for_rejoin' do
     end
   end
 
+  context 'with a single patient sequence number but using default api config' do
+    it 'should receive a successful response' do
+      stub_request(:post, 'http://127.0.0.1:3000/MatchInformaticsLayer/services/rs/rerun').
+          with(:body => "[\"12345\"]",
+               :headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Content-Length'=>'9', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby'}).
+          to_return(:status => 200, :body => '{ "status" : "SUCCESS", "message" : "This message have been recorded." }', :headers => {})
+
+      client = EcogAPIClient.new({ 'ecog_api' => {} })
+      response = client.send_patient_eligible_for_rejoin(['12345'])
+
+      expect(response).to be_instance_of(String)
+      expect(response.length).to be > 0
+    end
+  end
+
   context 'with a multiple patient sequence numbers' do
     it 'should receive a successful response' do
       stub_request(:post, 'https://ecoghost/MatchInformaticsLayer/services/rs/rerun').

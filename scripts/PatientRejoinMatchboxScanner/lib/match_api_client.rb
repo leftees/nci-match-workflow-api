@@ -22,7 +22,7 @@ class MatchAPIClient
     if !api_config.nil? && api_config.has_key?('match_api') && api_config['match_api'].has_key?(key)
       return api_config['match_api'][key]
     end
-    return @defaults.has_key?(key.to_s) ? @defaults[key.to_s] : nil
+    return @defaults.has_key?(key.to_sym) ? @defaults[key.to_sym] : nil
   end
 
   def build_match_context_url

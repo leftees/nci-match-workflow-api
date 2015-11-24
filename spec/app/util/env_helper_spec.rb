@@ -1,6 +1,11 @@
 require "#{File.dirname(__FILE__)}/../../../app/util/env_helper"
 
 RSpec.describe EnvHelper, '.log_level' do
+  after(:each) do
+    ENV.delete('LOG_LEVEL')
+    ENV.delete('LOG_FILEPATH')
+  end
+
   context 'with LOG_LEVEL environment variable not set' do
     it 'should return Logger::DEBUG' do
       expect(EnvHelper.log_level).to eq(Logger::DEBUG)
@@ -23,6 +28,11 @@ RSpec.describe EnvHelper, '.log_level' do
 end
 
 RSpec.describe EnvHelper, '.log_filepath' do
+  after(:each) do
+    ENV.delete('LOG_LEVEL')
+    ENV.delete('LOG_FILEPATH')
+  end
+
   context 'with LOG_FILEPATH environment not set' do
     it 'should return log/workflow-api.log' do
       expect(EnvHelper.log_filepath).to eq('log/workflow-api.log')

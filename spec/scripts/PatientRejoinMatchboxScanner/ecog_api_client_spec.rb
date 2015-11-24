@@ -1,5 +1,5 @@
-require "#{File.dirname(__FILE__)}/../spec_helper"
-require "#{File.dirname(__FILE__)}/../../scripts/PatientRejoinMatchboxScanner/lib/ecog_api_client"
+require "#{File.dirname(__FILE__)}/../../spec_helper"
+require "#{File.dirname(__FILE__)}/../../../scripts/PatientRejoinMatchboxScanner/lib/ecog_api_client"
 
 RSpec.describe EcogAPIClient, '#send_patient_eligible_for_rejoin' do
 

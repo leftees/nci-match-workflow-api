@@ -1,6 +1,6 @@
 require 'yaml'
 
-require "#{File.dirname(__FILE__)}/../../scripts/PatientRejoinMatchboxScanner/lib/config_loader"
+require "#{File.dirname(__FILE__)}/../../../scripts/PatientRejoinMatchboxScanner/lib/config_loader"
 
 RSpec.describe ConfigLoader, '#initialize' do
   context 'with invalid configuration path' do

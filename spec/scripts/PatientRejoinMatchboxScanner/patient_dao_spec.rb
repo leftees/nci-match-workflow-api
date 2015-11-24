@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../../scripts/PatientRejoinMatchboxScanner/lib/patient_dao"
+require "#{File.dirname(__FILE__)}/../../../scripts/PatientRejoinMatchboxScanner/lib/patient_dao"
 
 class PatientCollection
   def initialize

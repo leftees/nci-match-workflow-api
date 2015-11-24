@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../../scripts/PatientRejoinMatchboxScanner/lib/eligible_patient_selector"
+require "#{File.dirname(__FILE__)}/../../../scripts/PatientRejoinMatchboxScanner/lib/eligible_patient_selector"
 
 RSpec.describe EligiblePatientSelector, '.get_selected_arm' do
   context 'with a nil value' do

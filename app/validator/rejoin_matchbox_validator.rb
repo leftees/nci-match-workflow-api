@@ -15,6 +15,10 @@ class RejoinMatchboxValidator
     currentPatientStatus = @patient['currentPatientStatus']
     currentStepNumber = @patient['currentStepNumber']
 
+    if currentPatientStatus.nil? || currentStepNumber.nil?
+      raise RejoinError, "Patient #{patientSequenceNumber} current status and/or step number is nil."
+    end
+
     if currentPatientStatus != 'OFF_TRIAL_NO_TA_AVAILABLE' || currentStepNumber != '0'
       raise RejoinError, "Patient #{patientSequenceNumber} current status is #{currentPatientStatus} and step number is #{currentStepNumber}."
     end

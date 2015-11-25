@@ -6,8 +6,4 @@ class EnvHelper
       return Logger::DEBUG
     end
   end
-
-  def self.log_filepath
-    return !ENV['LOG_FILEPATH'].nil? ? ENV['LOG_FILEPATH'] : 'log/workflow-api.log'
-  end
 end

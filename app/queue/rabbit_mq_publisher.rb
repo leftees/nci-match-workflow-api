@@ -45,7 +45,7 @@ class RabbitMQPublisher
       begin
         channel = @conn.create_channel
         queue = channel.queue(RabbitMQ.queue_name, :durable => true)
-        exchange  = channel.default_exchange
+        exchange = channel.default_exchange
         exchange.publish(message.to_json, :routing_key => queue.name)
         break
       rescue => error

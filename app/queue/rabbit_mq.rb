@@ -1,20 +1,16 @@
 class RabbitMQ
+  @@hosts = [ '127.0.0.1:5672' ]
+  @@vhost = '/'
+  @@queue_name = 'matchTest'
+  @@username = nil
+  @@password = nil
+
   def self.load!(ymlPath, env)
     @@rabbitmq_config = YAML.load_file(ymlPath)[env.to_s] rescue nil
 
-    default_hosts = [ '127.0.0.1:5672' ]
-    default_vhost = '/'
-    default_queue_name = 'matchTest'
-
-    @@hosts = @@rabbitmq_config['clients']['default']['hosts'] rescue default_hosts
-    @@hosts = default_hosts if @@hosts.nil?
-
-    @@vhost = @@rabbitmq_config['clients']['default']['vhost'] rescue default_vhost
-    @@vhost = default_vhost if @@vhost.nil?
-
-    @@queue_name = @@rabbitmq_config['clients']['default']['queue_name'] rescue default_queue_name
-    @@queue_name = default_queue_name if @@queue_name.nil?
-
+    @@hosts = @@rabbitmq_config['clients']['default']['hosts'] rescue [ '127.0.0.1:5672' ]
+    @@vhost = @@rabbitmq_config['clients']['default']['vhost'] rescue '/'
+    @@queue_name = @@rabbitmq_config['clients']['default']['queue_name'] rescue 'matchTest'
     @@username = @@rabbitmq_config['clients']['default']['username'] rescue nil
     @@password = @@rabbitmq_config['clients']['default']['password'] rescue nil
   end

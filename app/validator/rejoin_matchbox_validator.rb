@@ -34,10 +34,10 @@ class RejoinMatchboxValidator
 
     if !@request_data.nil? && !@request_data['priorRejoinDrugs'].nil? && @request_data['priorRejoinDrugs'].size > 0
       @request_data['priorRejoinDrugs'].each do |drugCombo|
-        if drugCombo['drugs'].nil? || drugCombo['drugs'].empty?
+        if !drugCombo['drugs'].nil? || drugCombo['drugs'].size > 0
           drugCombo['drugs'].each do |drug|
             if drug['drugId'].nil? || drug['drugId'].empty?
-              raise RejoinError, "Rejoin request for patient #{patientSequenceNumber} contains a prior drug that is missing drugId #{priorRejoinDrug}."
+              raise RejoinError, "Rejoin request for patient #{patientSequenceNumber} contains a prior drug that is missing drugId #{@request_data['priorRejoinDrugs']}."
             end
           end
         end

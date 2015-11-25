@@ -42,6 +42,118 @@ RSpec.describe RejoinMatchboxValidator, '#validate' do
     it 'should raise a rejoin error' do
       validator = RejoinMatchboxValidator.new({ 'patientSequenceNumber' => '1234', 'currentPatientStatus' => 'OFF_TRIAL_NO_TA_AVAILABLE', 'currentStepNumber' => '0' }, nil)
       expect{ validator.validate }.to raise_error('No rejoin trigger exist for patient 1234.')
+
+      validator = RejoinMatchboxValidator.new({ 'patientSequenceNumber' => '1234', 'currentPatientStatus' => 'OFF_TRIAL_NO_TA_AVAILABLE', 'currentStepNumber' => '0', 'patientRejoinTriggers' => [] }, nil)
+      expect{ validator.validate }.to raise_error('No rejoin trigger exist for patient 1234.')
+    end
+  end
+
+  context 'with patient rejoin trigger that has a dateRejoined property' do
+    it 'should raise a rejoin error' do
+      patient = {
+          'patientSequenceNumber' => '1234',
+          'currentPatientStatus' => 'OFF_TRIAL_NO_TA_AVAILABLE',
+          'currentStepNumber' => '0',
+          'patientRejoinTriggers' => [ { 'dateRejoined' => DateTime.now }, { 'dateRejoined' => DateTime.now } ]
+      }
+      validator = RejoinMatchboxValidator.new(patient, nil)
+      expect{ validator.validate }.to raise_error('Latest patient 1234 rejoin trigger has already been proceed, no pending rejoin trigger exist.')
+    end
+  end
+
+  context 'with patient rejoin trigger but request data contains a drug combo that is missing a drug id' do
+    it 'should raise a rejoin error' do
+      patient = {
+          'patientSequenceNumber' => '1234',
+          'currentPatientStatus' => 'OFF_TRIAL_NO_TA_AVAILABLE',
+          'currentStepNumber' => '0',
+          'patientRejoinTriggers' => [ {} ]
+      }
+      request_data = {
+          "patientSequenceNumber" => "10367",
+          "priorRejoinDrugs" => [
+              {
+                  "drugs" => [
+                      {
+                          "drugId" => "DrugA_ID1",
+                          "name" => "DrugA_Name1"
+                      },
+                      {
+                          "name" => "DrugA_Name2"
+                      }
+                  ]
+              }
+          ]
+      }
+      validator = RejoinMatchboxValidator.new(patient, request_data)
+      expect{ validator.validate }.to raise_error('Rejoin request for patient 1234 contains a prior drug that is missing drugId [{"drugs"=>[{"drugId"=>"DrugA_ID1", "name"=>"DrugA_Name1"}, {"name"=>"DrugA_Name2"}]}].')
+    end
+  end
+
+  context 'with patient rejoin trigger but request data with a list of drugs is missing a drug id' do
+    it 'should raise a rejoin error' do
+      patient = {
+          'patientSequenceNumber' => '1234',
+          'currentPatientStatus' => 'OFF_TRIAL_NO_TA_AVAILABLE',
+          'currentStepNumber' => '0',
+          'patientRejoinTriggers' => [ {} ]
+      }
+      request_data = {
+          "patientSequenceNumber" => "10367",
+          "priorRejoinDrugs" => [
+              {
+                  "drugs" => [
+                      {
+                          "name" => "DrugA_Name1"
+                      }
+                  ]
+              },
+              {
+                  "drugs" => [
+                      {
+                          "drugId" => "DrugA_ID2",
+                          "name" => "DrugA_Name2"
+                      }
+                  ]
+              }
+          ]
+      }
+      validator = RejoinMatchboxValidator.new(patient, request_data)
+      expect{ validator.validate }.to raise_error('Rejoin request for patient 1234 contains a prior drug that is missing drugId [{"drugs"=>[{"name"=>"DrugA_Name1"}]}, {"drugs"=>[{"drugId"=>"DrugA_ID2", "name"=>"DrugA_Name2"}]}].')
+    end
+  end
+
+  context 'with patient rejoin trigger and valid request data' do
+    it 'should not raise a rejoin error' do
+      patient = {
+          'patientSequenceNumber' => '1234',
+          'currentPatientStatus' => 'OFF_TRIAL_NO_TA_AVAILABLE',
+          'currentStepNumber' => '0',
+          'patientRejoinTriggers' => [ {} ]
+      }
+      request_data = {
+          "patientSequenceNumber" => "10367",
+          "priorRejoinDrugs" => [
+              {
+                  "drugs" => [
+                      {
+                          "drugId" => "DrugA_ID1",
+                          "name" => "DrugA_Name1"
+                      }
+                  ]
+              },
+              {
+                  "drugs" => [
+                      {
+                          "drugId" => "DrugA_ID2",
+                          "name" => "DrugA_Name2"
+                      }
+                  ]
+              }
+          ]
+      }
+      validator = RejoinMatchboxValidator.new(patient, request_data)
+      expect{ validator.validate }.not_to raise_error
     end
   end
 

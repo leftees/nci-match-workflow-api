@@ -1,0 +1,11 @@
+unittest:
+  clients:
+    default:
+      hosts:
+        - unittest1:5672
+        - unittest2:5672
+        - unittest3:5672
+      vhost: ut_vhost
+      username: ut_username
+      password: ut_password
+      queue_name: ut_queue

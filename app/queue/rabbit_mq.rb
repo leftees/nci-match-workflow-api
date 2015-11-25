@@ -1,6 +1,6 @@
 class RabbitMQ
   def self.load!(ymlPath, env)
-    @@rabbitmq_config = YAML.load_file(ymlPath)[env.to_s]
+    @@rabbitmq_config = YAML.load_file(ymlPath)[env.to_s] rescue nil
 
     default_hosts = [ '127.0.0.1:5672' ]
     default_vhost = '/'

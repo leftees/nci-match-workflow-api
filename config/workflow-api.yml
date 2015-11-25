@@ -1,0 +1,6 @@
+development:
+  log_level: DEBUG
+prodtest:
+  log_level: DEBUG
+production:
+  log_level: INFO

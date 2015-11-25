@@ -1,10 +1,6 @@
 require "#{File.dirname(__FILE__)}/../../../app/util/workflow_logger"
 
 RSpec.describe WorkflowLogger, '.logger' do
-  after(:each) do
-    ENV.delete('LOG_LEVEL')
-  end
-
   context 'with default environment settings' do
     it 'should return logger using default settings' do
       expect(WorkflowLogger.logger.level).to eq(Logger::DEBUG)

@@ -9,7 +9,6 @@ require "#{File.dirname(__FILE__)}/model/patient"
 require "#{File.dirname(__FILE__)}/model/patient_assignment_queue_message"
 require "#{File.dirname(__FILE__)}/model/transaction_message"
 require "#{File.dirname(__FILE__)}/queue/rabbit_mq_publisher"
-require "#{File.dirname(__FILE__)}/util/env_helper"
 require "#{File.dirname(__FILE__)}/util/workflow_logger"
 require "#{File.dirname(__FILE__)}/validator/rejoin_matchbox_validator"
 
@@ -23,7 +22,7 @@ class WorkflowApi < Sinatra::Base
     enable :logging
     set :protection, :except => [:json_csrf]
     Mongo::Logger.logger = WorkflowLogger.logger
-    Mongo::Logger.logger.level = EnvHelper.log_level
+    Mongo::Logger.logger.level = WorkflowApiConfig.log_level
   end
 
   before do

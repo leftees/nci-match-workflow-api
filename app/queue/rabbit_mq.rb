@@ -47,7 +47,7 @@ class RabbitMQ
         :user => @@username,
         :password => @@password,
         :logger => WorkflowLogger.logger,
-        :log_level => EnvHelper.log_level
+        :log_level => WorkflowApiConfig.log_level
     }
   end
 end

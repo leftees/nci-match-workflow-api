@@ -2,11 +2,17 @@ development:
   database_config_path: ../config/mongoid-match-local.yml
   match_api_config_path: ../config/match-api-local.yml
   ecog_api_config_path: ../config/ecog-api-local.yml
-production_test:
+  log_level: DEBUG
+  log_filepath: log/patient_rejoin_matchbox_scanner.log
+prodtest:
   database_config_path: /local/content/ncimatch/conf/ruby/mongoid-match-prodtest.yml
   match_api_config_path: /local/content/ncimatch/conf/ruby/match-api-prodtest.yml
   ecog_api_config_path: /local/content/ncimatch/conf/ruby/ecog-api-prodtest.yml
+  log_level: DEBUG
+  log_filepath: /local/content/ncimatch/log/patient-scanner-prodtest.log
 production:
   database_config_path: /local/content/ncimatch/conf/ruby/mongoid-match-prod.yml
   match_api_config_path: /local/content/ncimatch/conf/ruby/match-api-prod.yml
   ecog_api_config_path: /local/content/ncimatch/conf/ruby/ecog-api-prod.yml
+  log_level: INFO
+  log_filepath: /local/content/ncimatch/log/patient-scanner-prod.log

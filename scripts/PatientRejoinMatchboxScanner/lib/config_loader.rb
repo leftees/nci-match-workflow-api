@@ -9,6 +9,9 @@ class ConfigLoader
 
     scanner_config = YAML.load_file(File.join(File.dirname(__FILE__), configPath))[environment]
 
+    @config['log_level'] = Logger.const_get(scanner_config['log_level']) rescue Logger::DEBUG
+    @config['log_filepath'] = Logger.const_get(scanner_config['log_filepath']) rescue 'log/patient_rejoin_matchbox_scanner.log'
+
     load_database_config(scanner_config, environment)
     load_match_api_config(scanner_config, environment)
     load_ecog_api_config(scanner_config, environment)

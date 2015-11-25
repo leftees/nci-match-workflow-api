@@ -7,27 +7,23 @@ require "#{File.dirname(__FILE__)}/lib/match_api_client"
 require "#{File.dirname(__FILE__)}/lib/eligible_patient_selector"
 require "#{File.dirname(__FILE__)}/lib/ecog_api_client"
 
-begin
-  LOG_LEVEL = ENV['LOG_LEVEL'].nil? ? Logger::DEBUG : Logger.const_get(ENV['LOG_LEVEL'])
-rescue
-  LOG_LEVEL = Logger::INFO
-end
+clh = CommandLineHelper.new
+cl = ConfigLoader.new(clh.options[:configPath], clh.options[:environment])
 
-logger = Logger.new('log/patient_rejoin_matchbox_scanner.log', 3, 100 * 1024 * 1024)
+dirname = File.dirname(cl.config['log_filepath'])
+FileUtils.mkdir_p dirname unless File.exists?(dirname)
+
+logger = Logger.new(cl.config['log_filepath'], 3, 100 * 1024 * 1024)
 Mongo::Logger.logger = logger
 
-logger.level = LOG_LEVEL
+logger.level = cl.config['log_level']
 Mongo::Logger.logger.level = logger.level
 
 logger.info('========== Starting Patient Rejoin Matchbox Scanner ==========')
 logger.info('SCANNER | Log file written to log/patient_rejoin_matchbox_scanner.log.')
 
 begin
-  clh = CommandLineHelper.new
-
   logger.info("SCANNER | Command line options received #{clh.options}")
-
-  cl = ConfigLoader.new(clh.options[:configPath], clh.options[:environment])
   logger.debug("SCANNER | Database configuration #{cl.config['database']}")
   logger.debug("SCANNER | Match API configuration #{cl.config['match_api']}")
   logger.debug("SCANNER | ECOG API configuration #{cl.config['ecog_api']}")

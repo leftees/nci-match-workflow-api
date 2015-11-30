@@ -1,3 +1,5 @@
+require 'pathname'
+
 class ConfigLoader
   attr_reader :config
 
@@ -19,7 +21,9 @@ class ConfigLoader
 
   def load_database_config(scanner_config, environment)
     if scanner_config.has_key?('database_config_path')
-      database_config = YAML.load_file(File.join(File.dirname(__FILE__), scanner_config['database_config_path']))[environment]
+      database_config = Pathname.new(scanner_config['database_config_path']).relative? ?
+          YAML.load_file(File.join(File.dirname(__FILE__), scanner_config['database_config_path']))[environment] :
+          YAML.load_file(scanner_config['database_config_path'])[environment]
       @config['database'] = {
           'hosts' => database_config['clients']['default']['hosts'],
           'dbname' => database_config['clients']['default']['database'],
@@ -33,7 +37,9 @@ class ConfigLoader
 
   def load_match_api_config(scanner_config, environment)
     if scanner_config.has_key?('match_api_config_path')
-      match_api_config = YAML.load_file(File.join(File.dirname(__FILE__), scanner_config['match_api_config_path']))[environment]
+      match_api_config = Pathname.new(scanner_config['match_api_config_path']).relative? ?
+          YAML.load_file(File.join(File.dirname(__FILE__), scanner_config['match_api_config_path']))[environment] :
+          YAML.load_file(scanner_config['match_api_config_path'])[environment]
       @config['match_api'] = {
           'scheme' => match_api_config['clients']['default']['scheme'],
           'hosts' => match_api_config['clients']['default']['hosts'],
@@ -46,7 +52,9 @@ class ConfigLoader
 
   def load_ecog_api_config(scanner_config, environment)
     if scanner_config.has_key?('ecog_api_config_path')
-      ecog_api_config = YAML.load_file(File.join(File.dirname(__FILE__), scanner_config['ecog_api_config_path']))[environment]
+      ecog_api_config = Pathname.new(scanner_config['ecog_api_config_path']).relative? ?
+          YAML.load_file(File.join(File.dirname(__FILE__), scanner_config['ecog_api_config_path']))[environment] :
+          YAML.load_file(scanner_config['ecog_api_config_path'])[environment]
       @config['ecog_api'] = {
           'scheme' => ecog_api_config['clients']['default']['scheme'],
           'hosts' => ecog_api_config['clients']['default']['hosts'],

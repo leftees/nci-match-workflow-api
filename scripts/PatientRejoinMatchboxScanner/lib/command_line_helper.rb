@@ -24,8 +24,8 @@ class CommandLineHelper
 
     begin
       optparse.parse! ARGV
-    rescue OptionParser::InvalidOption => e
-      # Ignore invalid options
+    rescue OptionParser::InvalidOption => error
+      p "Failed to parse command line options, received error: #{error.message}"
     end
 
     raise OptionParser::MissingArgument.new('Missing path to yaml configuration file argument.') if options[:configPath].nil?

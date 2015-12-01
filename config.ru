@@ -15,7 +15,7 @@ configure(:production){
   require './config/environments/production.rb'
 }
 
-if (!Dir.exist? ('log'))
+if !Dir.exist? ('log')
   Dir.mkdir 'log'
 end
 

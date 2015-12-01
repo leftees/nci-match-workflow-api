@@ -27,17 +27,10 @@ class ConfigLoader
     if scanner_config.has_key?('database_config_path')
       database_config = load_yml_file(scanner_config['database_config_path'], environment)
       credentials = load_auth_credentials(database_config)
-      @config['database'] = {
-          'hosts' => database_config['clients']['default']['hosts'],
-          'dbname' => database_config['clients']['default']['database'],
-          'username' => credentials[0],
-          'password' => credentials[1]
-      }
-      @redacted_config['database'] = @config['database'].clone
-      @redacted_config['database']['username'] = '********'
-      @redacted_config['database']['password'] = '********'
+      store_config('database', load_db_config(database_config), credentials)
     else
       @config['database'] = nil
+      @redacted_config['database'] = nil
     end
   end
 
@@ -45,18 +38,10 @@ class ConfigLoader
     if scanner_config.has_key?('match_api_config_path')
       match_api_config = load_yml_file(scanner_config['match_api_config_path'], environment)
       credentials = load_auth_credentials(match_api_config)
-      @config['match_api'] = {
-          'scheme' => match_api_config['clients']['default']['scheme'],
-          'hosts' => match_api_config['clients']['default']['hosts'],
-          'context' => match_api_config['clients']['default']['context'],
-          'username' => credentials[0],
-          'password' => credentials[1]
-      }
-      @redacted_config['match_api'] = @config['match_api'].clone
-      @redacted_config['match_api']['username'] = '********'
-      @redacted_config['match_api']['password'] = '********'
+      store_config('match_api', load_api_config(match_api_config), credentials)
     else
       @config['match_api'] = nil
+      @redacted_config['match_api'] = nil
     end
   end
 
@@ -64,18 +49,10 @@ class ConfigLoader
     if scanner_config.has_key?('ecog_api_config_path')
       ecog_api_config = load_yml_file(scanner_config['ecog_api_config_path'], environment)
       credentials = load_auth_credentials(ecog_api_config)
-      @config['ecog_api'] = {
-          'scheme' => ecog_api_config['clients']['default']['scheme'],
-          'hosts' => ecog_api_config['clients']['default']['hosts'],
-          'context' => ecog_api_config['clients']['default']['context'],
-          'username' => credentials[0],
-          'password' => credentials[1]
-      }
-      @redacted_config['ecog_api'] = @config['ecog_api'].clone
-      @redacted_config['ecog_api']['username'] = '********'
-      @redacted_config['ecog_api']['password'] = '********'
+      store_config('ecog_api', load_api_config(ecog_api_config), credentials)
     else
       @config['ecog_api'] = nil
+      @redacted_config['ecog_api'] = nil
     end
   end
 
@@ -91,6 +68,31 @@ class ConfigLoader
     return username, password
   end
 
-  private :load_database_config, :load_match_api_config, :load_ecog_api_config, :load_yml_file, :load_auth_credentials
+  def load_db_config(config)
+    return {
+        'hosts' => config['clients']['default']['hosts'],
+        'dbname' => config['clients']['default']['database']
+    }
+  end
+
+  def load_api_config(config)
+    return {
+        'scheme' => config['clients']['default']['scheme'],
+        'hosts' => config['clients']['default']['hosts'],
+        'context' => config['clients']['default']['context']
+    }
+  end
+
+  def store_config(key, yml_config, credentials)
+    @config[key] = yml_config
+    @config[key]['username'] = credentials[0]
+    @config[key]['password'] = credentials[1]
+
+    @redacted_config[key] = @config[key].clone
+    @redacted_config[key]['username'] = '********'
+    @redacted_config[key]['password'] = '********'
+  end
+
+  private :load_database_config, :load_match_api_config, :load_ecog_api_config, :load_yml_file, :load_auth_credentials, :load_api_config
 
 end

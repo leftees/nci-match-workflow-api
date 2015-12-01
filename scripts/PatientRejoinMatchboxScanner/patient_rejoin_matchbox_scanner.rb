@@ -11,7 +11,7 @@ clh = CommandLineHelper.new
 cl = ConfigLoader.new(clh.options[:configPath], clh.options[:environment])
 
 dirname = File.dirname(cl.config['log_filepath'])
-FileUtils.mkdir_p dirname unless File.exists?(dirname)
+FileUtils.mkdir_p dirname unless File.exist?(dirname)
 
 logger = Logger.new(cl.config['log_filepath'], 3, 100 * 1024 * 1024)
 Mongo::Logger.logger = logger

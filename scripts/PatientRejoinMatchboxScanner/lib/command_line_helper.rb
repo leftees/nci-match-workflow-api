@@ -24,7 +24,7 @@ class CommandLineHelper
 
     begin
       optparse.parse! ARGV
-    rescue OptionParser::InvalidOption
+    rescue OptionParser::InvalidOption => e
       # Ignore invalid options
     end
 

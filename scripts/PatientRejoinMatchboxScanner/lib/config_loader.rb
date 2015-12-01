@@ -1,10 +1,11 @@
 require 'pathname'
 
 class ConfigLoader
-  attr_reader :config
+  attr_reader :config, :redacted_config
 
   def initialize(configPath, environment)
     @config = {}
+    @redacted_config = {}
 
     environment = ENV['SCANNER_ENV'] if !environment.nil? && !ENV['SCANNER_ENV'].nil?
     environment = 'development' if environment.nil?
@@ -13,6 +14,9 @@ class ConfigLoader
 
     @config['log_level'] = Logger.const_get(scanner_config['log_level']) rescue Logger::DEBUG
     @config['log_filepath'] = Logger.const_get(scanner_config['log_filepath']) rescue 'log/patient_rejoin_matchbox_scanner.log'
+
+    @redacted_config['log_level'] = @config['log_level']
+    @redacted_config['log_filepath'] = @config['log_filepath']
 
     load_database_config(scanner_config, environment)
     load_match_api_config(scanner_config, environment)
@@ -24,11 +28,19 @@ class ConfigLoader
       database_config = Pathname.new(scanner_config['database_config_path']).relative? ?
           YAML.load_file(File.join(File.dirname(__FILE__), scanner_config['database_config_path']))[environment] :
           YAML.load_file(scanner_config['database_config_path'])[environment]
+      username = database_config['clients']['default']['options']['user'] rescue nil
+      password = database_config['clients']['default']['options']['password'] rescue nil
       @config['database'] = {
           'hosts' => database_config['clients']['default']['hosts'],
           'dbname' => database_config['clients']['default']['database'],
-          'username' =>database_config['clients']['default']['options']['user'],
-          'password' => database_config['clients']['default']['options']['password'],
+          'username' => username,
+          'password' => password
+      }
+      @redacted_config['database'] = {
+          'hosts' => database_config['clients']['default']['hosts'],
+          'dbname' => database_config['clients']['default']['database'],
+          'username' => '********',
+          'password' => '********'
       }
     else
       @config['database'] = nil
@@ -40,10 +52,21 @@ class ConfigLoader
       match_api_config = Pathname.new(scanner_config['match_api_config_path']).relative? ?
           YAML.load_file(File.join(File.dirname(__FILE__), scanner_config['match_api_config_path']))[environment] :
           YAML.load_file(scanner_config['match_api_config_path'])[environment]
+      username = match_api_config['clients']['default']['options']['user'] rescue nil
+      password = match_api_config['clients']['default']['options']['password'] rescue nil
       @config['match_api'] = {
           'scheme' => match_api_config['clients']['default']['scheme'],
           'hosts' => match_api_config['clients']['default']['hosts'],
           'context' => match_api_config['clients']['default']['context'],
+          'username' => username,
+          'password' => password
+      }
+      @redacted_config['match_api'] = {
+          'scheme' => match_api_config['clients']['default']['scheme'],
+          'hosts' => match_api_config['clients']['default']['hosts'],
+          'context' => match_api_config['clients']['default']['context'],
+          'username' => '********',
+          'password' => '********'
       }
     else
       @config['match_api'] = nil
@@ -55,10 +78,21 @@ class ConfigLoader
       ecog_api_config = Pathname.new(scanner_config['ecog_api_config_path']).relative? ?
           YAML.load_file(File.join(File.dirname(__FILE__), scanner_config['ecog_api_config_path']))[environment] :
           YAML.load_file(scanner_config['ecog_api_config_path'])[environment]
+      username = ecog_api_config['clients']['default']['options']['user'] rescue nil
+      password = ecog_api_config['clients']['default']['options']['password'] rescue nil
       @config['ecog_api'] = {
           'scheme' => ecog_api_config['clients']['default']['scheme'],
           'hosts' => ecog_api_config['clients']['default']['hosts'],
           'context' => ecog_api_config['clients']['default']['context'],
+          'username' => username,
+          'password' => password
+      }
+      @redacted_config['ecog_api'] = {
+          'scheme' => ecog_api_config['clients']['default']['scheme'],
+          'hosts' => ecog_api_config['clients']['default']['hosts'],
+          'context' => ecog_api_config['clients']['default']['context'],
+          'username' => '********',
+          'password' => '********'
       }
     else
       @config['ecog_api'] = nil

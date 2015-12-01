@@ -24,9 +24,9 @@ logger.info('SCANNER | Log file written to log/patient_rejoin_matchbox_scanner.l
 
 begin
   logger.info("SCANNER | Command line options received #{clh.options}")
-  logger.debug("SCANNER | Database configuration #{cl.config['database']}")
-  logger.debug("SCANNER | Match API configuration #{cl.config['match_api']}")
-  logger.debug("SCANNER | ECOG API configuration #{cl.config['ecog_api']}")
+  logger.debug("SCANNER | Database configuration #{cl.redacted_config['database']}")
+  logger.debug("SCANNER | Match API configuration #{cl.redacted_config['match_api']}")
+  logger.debug("SCANNER | ECOG API configuration #{cl.redacted_config['ecog_api']}")
 
   dao = PatientDao.new(cl.config)
   off_trial_patients = dao.get_patient_by_status('OFF_TRIAL_NO_TA_AVAILABLE')

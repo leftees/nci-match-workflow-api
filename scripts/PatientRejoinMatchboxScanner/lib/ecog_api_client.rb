@@ -8,6 +8,8 @@ class EcogAPIClient
     @scheme = get_prop(api_config, 'scheme')
     @hosts = get_prop(api_config, 'hosts')
     @context = get_prop(api_config, 'context')
+    @username = get_prop(api_config, 'username')
+    @password = get_prop(api_config, 'password')
   end
 
   def send_patient_eligible_for_rejoin(patientSequenceNumbers)
@@ -16,7 +18,14 @@ class EcogAPIClient
     end
 
     url = build_ecog_context_url + '/services/rs/rerun'
-    RestClient.post url, patientSequenceNumbers.to_json, :content_type => :json, :accept => :json
+    RestClient::Request.execute(
+        :url => url,
+        :method => :post,
+        :payload => patientSequenceNumbers.to_json,
+        :user => @username,
+        :password => @password,
+        :headers => { 'Accept'=>'application/json', :content_type => 'application/json' },
+        :verify_ssl => false)
   end
 
   def get_prop(api_config, key)

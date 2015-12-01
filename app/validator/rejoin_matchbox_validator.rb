@@ -1,47 +1,57 @@
 require "#{File.dirname(__FILE__)}/../error/rejoin_error"
 
 class RejoinMatchboxValidator
+
   def initialize(patient, request_data)
     @patient = patient
     @request_data = request_data
   end
 
   def validate
+    validatePatientCurrentState
+    validatePatientRejoinTriggers
+    validateRequestData
+  end
+
+  def validatePatientCurrentState
     if @patient.nil?
       raise RejoinError, 'Patient does not exist in Matchbox.'
     end
 
-    patientSequenceNumber = @patient['patientSequenceNumber']
-    currentPatientStatus = @patient['currentPatientStatus']
-    currentStepNumber = @patient['currentStepNumber']
-
-    if currentPatientStatus.nil? || currentStepNumber.nil?
-      raise RejoinError, "Patient #{patientSequenceNumber} current status and/or step number is nil."
+    if @patient['currentPatientStatus'].nil? || @patient['currentStepNumber'].nil?
+      raise RejoinError, "Patient #{@patient['patientSequenceNumber']} current status and/or step number is nil."
     end
 
-    if currentPatientStatus != 'OFF_TRIAL_NO_TA_AVAILABLE' || currentStepNumber != '0'
-      raise RejoinError, "Patient #{patientSequenceNumber} current status is #{currentPatientStatus} and step number is #{currentStepNumber}."
+    if @patient['currentPatientStatus'] != 'OFF_TRIAL_NO_TA_AVAILABLE' || @patient['currentStepNumber'] != '0'
+      raise RejoinError, "Patient #{@patient['patientSequenceNumber']} current status is #{@patient['currentPatientStatus']} and step number is #{@patient['currentStepNumber']}."
     end
+  end
 
+  def validatePatientRejoinTriggers
     if @patient['patientRejoinTriggers'].nil? || @patient['patientRejoinTriggers'].size == 0
-      raise RejoinError, "No rejoin trigger exist for patient #{patientSequenceNumber}."
+      raise RejoinError, "No rejoin trigger exist for patient #{@patient['patientSequenceNumber']}."
     end
 
     rejoin_trigger = @patient['patientRejoinTriggers'][@patient['patientRejoinTriggers'].size - 1]
     if !rejoin_trigger['dateRejoined'].nil?
-      raise RejoinError, "Latest patient #{patientSequenceNumber} rejoin trigger has already been proceed, no pending rejoin trigger exist."
+      raise RejoinError, "Latest patient #{@patient['patientSequenceNumber']} rejoin trigger has already been proceed, no pending rejoin trigger exist."
     end
+  end
 
+  def validateRequestData
     if !@request_data.nil? && !@request_data['priorRejoinDrugs'].nil? && @request_data['priorRejoinDrugs'].size > 0
       @request_data['priorRejoinDrugs'].each do |drugCombo|
         if !drugCombo['drugs'].nil? || drugCombo['drugs'].size > 0
           drugCombo['drugs'].each do |drug|
             if drug['drugId'].nil? || drug['drugId'].empty?
-              raise RejoinError, "Rejoin request for patient #{patientSequenceNumber} contains a prior drug that is missing drugId #{@request_data['priorRejoinDrugs']}."
+              raise RejoinError, "Rejoin request for patient #{@patient['patientSequenceNumber']} contains a prior drug that is missing drugId #{@request_data['priorRejoinDrugs']}."
             end
           end
         end
       end
     end
   end
+
+  private :validatePatientCurrentState, :validatePatientRejoinTriggers, :validateRequestData
+
 end

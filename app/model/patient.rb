@@ -32,7 +32,7 @@ class Patient
             stepNumber: self['currentStepNumber'],
             patientStatus: status,
             message: 'Notified by ECOG that the patient has rejoined the study.',
-            dateCretaed: DateTime.now,
+            dateCreated: DateTime.now,
             auditDate: DateTime.now
         }]
     self

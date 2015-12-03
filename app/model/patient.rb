@@ -13,13 +13,11 @@ class Patient
 
   def add_prior_drugs(priorDrugs)
     if !priorDrugs.nil? && priorDrugs.size > 0
-      updated_prior_drugs = [] + self['priorDrugs']
+      updated_prior_drugs = []
       priorDrugs.each do |drugCombo|
-        if !drugCombo['drugs'].nil? && drugCombo['drugs'].size > 0
-          updated_prior_drugs.push(drugCombo)
-        end
+        updated_prior_drugs.push(drugCombo)
       end
-      self['priorDrugs'] = updated_prior_drugs
+      self['priorDrugs'] = self['priorDrugs'] + updated_prior_drugs
     end
     self
   end

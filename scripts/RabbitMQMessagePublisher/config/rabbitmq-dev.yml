@@ -1,0 +1,6 @@
+development:
+  clients:
+    default:
+      hosts:
+        - localhost:5672
+      queue_name: test_task_queue

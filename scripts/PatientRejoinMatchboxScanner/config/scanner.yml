@@ -3,7 +3,7 @@ development:
   match_api_config_path: ../config/match-api-local.yml
   ecog_api_config_path: ../config/ecog-api-local.yml
   log_level: DEBUG
-  log_filepath: log/patient_rejoin_matchbox_scanner.log
+  log_filepath: log/patient-scanner-dev.log
 prodtest:
   database_config_path: /local/content/ncimatch/conf/ruby/mongoid-match-prodtest.yml
   match_api_config_path: /local/content/ncimatch/conf/ruby/match-api-prodtest.yml

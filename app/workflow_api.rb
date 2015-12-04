@@ -8,6 +8,7 @@ require "#{File.dirname(__FILE__)}/error/rejoin_error"
 require "#{File.dirname(__FILE__)}/model/patient"
 require "#{File.dirname(__FILE__)}/model/patient_assignment_queue_message"
 require "#{File.dirname(__FILE__)}/model/transaction_message"
+require "#{File.dirname(__FILE__)}/model/version"
 require "#{File.dirname(__FILE__)}/queue/rabbit_mq_publisher"
 require "#{File.dirname(__FILE__)}/util/workflow_logger"
 require "#{File.dirname(__FILE__)}/validator/rejoin_matchbox_validator"
@@ -33,9 +34,9 @@ class WorkflowApi < Sinatra::Base
 
   get '/version' do
     content_type :json
-    version = 'v.1.0.0-beta1'
-    WorkflowLogger.logger.info "WORKFLOW API | Returning version '#{version}' to remote host."
-    version
+    version = Version.instance
+    WorkflowLogger.logger.info "WORKFLOW API | Returning version '#{version.to_json}' to remote host."
+    version.to_json
   end
 
   post '/ecog/rs/rejoin/:patientSequenceNumber' do

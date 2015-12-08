@@ -10,7 +10,7 @@ class ConfigLoader
     environment = ENV['SCANNER_ENV'] if !environment.nil? && !ENV['SCANNER_ENV'].nil?
     environment = 'development' if environment.nil?
 
-    scanner_config = YAML.load_file(File.join(File.dirname(__FILE__), configPath))[environment]
+    scanner_config = load_yml_file(configPath, environment)
 
     @config['log_level'] = Logger.const_get(scanner_config['log_level']) rescue Logger::DEBUG
     @config['log_filepath'] = Logger.const_get(scanner_config['log_filepath']) rescue 'log/patient_rejoin_matchbox_scanner.log'

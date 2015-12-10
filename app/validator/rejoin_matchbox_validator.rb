@@ -8,12 +8,12 @@ class RejoinMatchboxValidator
   end
 
   def validate
-    validatePatientCurrentState
-    validatePatientRejoinTriggers
-    validateRequestData
+    validate_patient_current_state
+    validate_patient_rejoin_triggers
+    validate_request_data
   end
 
-  def validatePatientCurrentState
+  def validate_patient_current_state
     if @patient.nil?
       raise RejoinError, 'Patient does not exist in Matchbox.'
     end
@@ -27,7 +27,7 @@ class RejoinMatchboxValidator
     end
   end
 
-  def validatePatientRejoinTriggers
+  def validate_patient_rejoin_triggers
     if @patient['patientRejoinTriggers'].nil? || @patient['patientRejoinTriggers'].size == 0
       raise RejoinError, "No rejoin trigger exist for patient #{@patient['patientSequenceNumber']}."
     end
@@ -38,7 +38,7 @@ class RejoinMatchboxValidator
     end
   end
 
-  def validateRequestData
+  def validate_request_data
     if !@request_data.nil? && !@request_data['priorRejoinDrugs'].nil? && @request_data['priorRejoinDrugs'].size > 0
       @request_data['priorRejoinDrugs'].each do |drugCombo|
         if !drugCombo['drugs'].nil? || drugCombo['drugs'].size > 0
@@ -52,6 +52,6 @@ class RejoinMatchboxValidator
     end
   end
 
-  private :validatePatientCurrentState, :validatePatientRejoinTriggers, :validateRequestData
+  private :validate_patient_current_state, :validate_patient_rejoin_triggers, :validate_request_data
 
 end

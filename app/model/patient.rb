@@ -1,5 +1,7 @@
 require 'mongoid'
 
+require "#{File.dirname(__FILE__)}/../util/drug_combo_helper"
+
 class Patient
   include Mongoid::Document
   store_in collection: 'patient'
@@ -15,7 +17,7 @@ class Patient
     if !priorDrugs.nil? && priorDrugs.size > 0
       updated_prior_drugs = []
       priorDrugs.each do |drugCombo|
-        updated_prior_drugs.push(drugCombo)
+        updated_prior_drugs.push(drugCombo) if !DrugComboHelper.exist_in_drug_combo_list(self['priorDrugs'], drugCombo)
       end
       self['priorDrugs'] = self['priorDrugs'] + updated_prior_drugs
     end
@@ -50,4 +52,5 @@ class Patient
     }]
     self
   end
+
 end

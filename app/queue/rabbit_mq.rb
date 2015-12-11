@@ -48,7 +48,6 @@ class RabbitMQ
   end
 
   def self.connection_config
-    # TODO: Test setting :automatic_recovery => false
     return {
         :hosts => @@hosts,
         :vhost => @@vhost,

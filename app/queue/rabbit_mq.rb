@@ -5,6 +5,7 @@ class RabbitMQ
   @@username = nil
   @@password = nil
   @@use_ssl = false
+  @@verify_peer = false
 
   def self.load!(ymlPath, env)
     @@rabbitmq_config = YAML.load_file(ymlPath)[env.to_s] rescue nil
@@ -15,6 +16,7 @@ class RabbitMQ
     @@username = @@rabbitmq_config['clients']['default']['username'] rescue nil
     @@password = @@rabbitmq_config['clients']['default']['password'] rescue nil
     @@use_ssl = @@rabbitmq_config['clients']['default']['use_ssl'] rescue false
+    @@verify_peer = @@rabbitmq_config['clients']['default']['verify_peer'] rescue false
   end
 
   def self.hosts
@@ -41,6 +43,10 @@ class RabbitMQ
     @@use_ssl
   end
 
+  def self.verify_peer
+    @@verify_peer
+  end
+
   def self.connection_config
     # TODO: Test setting :automatic_recovery => false
     return {
@@ -49,6 +55,7 @@ class RabbitMQ
         :user => @@username,
         :password => @@password,
         :ssl => @@use_ssl,
+        :verify_peer => @@verify_peer,
         :logger => WorkflowLogger.logger,
         :log_level => WorkflowApiConfig.log_level
     }

@@ -5,3 +5,4 @@ development:
         - localhost:5672
       queue_name: test_task_queue
       use_ssl: false
+      verify_peer: false

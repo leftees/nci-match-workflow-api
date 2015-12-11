@@ -1,0 +1,6 @@
+development:
+  database_config_path: ../../../spec/resource/mongoid-match-unittest.yml
+  match_api_config_path: ../../../spec/resource/match-api-unittest.yml
+  ecog_api_config_path: ../../../spec/resource/ecog-api-unittest.yml
+  log_level: DEBUG
+  log_filepath: log/patient-scanner-dev.log

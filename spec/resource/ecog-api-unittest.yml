@@ -1,0 +1,7 @@
+development:
+  clients:
+    default:
+      scheme: http
+      hosts:
+        - 127.0.0.1:3500
+      context: /MatchInformaticsLayer

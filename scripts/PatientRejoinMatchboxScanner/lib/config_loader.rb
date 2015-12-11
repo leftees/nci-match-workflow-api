@@ -1,3 +1,4 @@
+require 'logger'
 require 'pathname'
 
 class ConfigLoader
@@ -13,7 +14,7 @@ class ConfigLoader
     scanner_config = load_yml_file(configPath, environment)
 
     @config['log_level'] = Logger.const_get(scanner_config['log_level']) rescue Logger::DEBUG
-    @config['log_filepath'] = Logger.const_get(scanner_config['log_filepath']) rescue 'log/patient_rejoin_matchbox_scanner.log'
+    @config['log_filepath'] = Logger.const_get(scanner_config['log_filepath']) rescue 'log/patient-scanner.log'
 
     @redacted_config['log_level'] = @config['log_level']
     @redacted_config['log_filepath'] = @config['log_filepath']

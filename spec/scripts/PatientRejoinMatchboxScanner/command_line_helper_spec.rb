@@ -11,12 +11,12 @@ RSpec.describe CommandLineHelper, '#get_options' do
     it 'should return back the config path and mode' do
       ARGV.unshift('production')
       ARGV.unshift('-e')
-      ARGV.unshift('../config/scanner.yml')
+      ARGV.unshift('../config/scanner-unittest.yml')
       ARGV.unshift('-c')
 
       clh = CommandLineHelper.new
 
-      expect(clh.options[:configPath]).to eq('../config/scanner.yml')
+      expect(clh.options[:configPath]).to eq('../config/scanner-unittest.yml')
       expect(clh.options[:environment]).to eq('production')
     end
   end

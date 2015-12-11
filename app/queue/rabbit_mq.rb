@@ -4,6 +4,7 @@ class RabbitMQ
   @@queue_name = 'matchTest'
   @@username = nil
   @@password = nil
+  @@use_ssl = false
 
   def self.load!(ymlPath, env)
     @@rabbitmq_config = YAML.load_file(ymlPath)[env.to_s] rescue nil
@@ -13,26 +14,31 @@ class RabbitMQ
     @@queue_name = @@rabbitmq_config['clients']['default']['queue_name'] rescue 'matchTest'
     @@username = @@rabbitmq_config['clients']['default']['username'] rescue nil
     @@password = @@rabbitmq_config['clients']['default']['password'] rescue nil
+    @@use_ssl = @@rabbitmq_config['clients']['default']['use_ssl'] rescue false
   end
 
   def self.hosts
-    return @@hosts
+    @@hosts
   end
 
   def self.vhost
-    return @@vhost
+    @@vhost
   end
 
   def self.queue_name
-    return @@queue_name
+    @@queue_name
   end
 
   def self.username
-    return @@username
+    @@username
   end
 
   def self.password
-    return @@password
+    @@password
+  end
+
+  def self.use_ssl
+    @@use_ssl
   end
 
   def self.connection_config
@@ -42,6 +48,7 @@ class RabbitMQ
         :vhost => @@vhost,
         :user => @@username,
         :password => @@password,
+        :ssl => @@use_ssl,
         :logger => WorkflowLogger.logger,
         :log_level => WorkflowApiConfig.log_level
     }

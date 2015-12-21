@@ -17,6 +17,7 @@ require_relative 'service/clia_messaging_service'
 require_relative 'service/ecog_messaging_service'
 require_relative 'service/match_service'
 require_relative 'service/mda_messaging_service'
+require_relative 'service/change_request_service'
 
 class WorkflowApi < Sinatra::Base
 
@@ -42,5 +43,6 @@ class WorkflowApi < Sinatra::Base
   register Sinatra::WorkflowApi::MDAMessagingService
   register Sinatra::WorkflowApi::CLIAMessagingService
   register Sinatra::WorkflowApi::MatchService
+  register Sinatra::WorkflowApi::ChangeRequestService
 
 end

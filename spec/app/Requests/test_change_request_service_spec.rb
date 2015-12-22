@@ -5,11 +5,11 @@ require 'rack/test'
 require 'sinatra'
 
 # describe 'Change Request Service Tests' do
-RSpec.describe Sinatra::WorkflowApi::ChangeRequestService::ChangeRequest do
-  def app
-    Sinatra::WorkflowApi::ChangeRequestService::ChangeRequest
-    # Sinatra::WorkflowApi::ChangeRequestService
-  end
+# RSpec.describe Sinatra::WorkflowApi::ChangeRequestService::ChangeRequest do
+#   def app
+#     Sinatra::WorkflowApi::ChangeRequestService::ChangeRequest
+#     # Sinatra::WorkflowApi::ChangeRequestService
+#   end
 
   # describe 'Get version info' do
   #   it 'should pass, returns version' do
@@ -18,4 +18,4 @@ RSpec.describe Sinatra::WorkflowApi::ChangeRequestService::ChangeRequest do
   #   end
   # end
 
-end
+# end

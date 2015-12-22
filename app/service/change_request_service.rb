@@ -11,14 +11,20 @@ module Sinatra
             #curl -v -F "data=@/path/to/filename.ext"  http://localhost:9292/changerequest/PatientID
 
             datafile = params[:data]
-            fullpath = "changerequest/" + datafile[:filename]
+            fullpath = "changerequest/#{params[:patientID]}/#{datafile[:filename]}"
 
             # check if file already exists
             #TODO
 
             # need to create directory if it doesn't exist
             dirname = File.dirname(fullpath)
-            Dir.mkdir(dirname) unless File.exists?(dirname)
+            tokens = dirname.split(/[\/\\]/) 
+            1.upto(tokens.size) do |n|
+              dir = tokens[0...n]
+              puts "Dir=#{dir}"
+              Dir.mkdir(dir.join("/")) unless Dir.exist?(dir.join("/"))
+            end
+
 
             #write temp file to destination
             diskfile = File.new(fullpath, "w")

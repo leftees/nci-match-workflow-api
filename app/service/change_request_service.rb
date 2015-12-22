@@ -1,7 +1,8 @@
 module Sinatra
   module WorkflowApi
     module ChangeRequestService
-
+      require 'sinatra/base'
+      class ChangeRequest < Sinatra::Base
       def self.registered(service)
 
 
@@ -35,6 +36,7 @@ module Sinatra
           version.to_json
         end
 
+      end
       end
 
     end

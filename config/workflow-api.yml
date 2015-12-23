@@ -3,4 +3,4 @@ development:
 prodtest:
   log_level: DEBUG
 production:
-  log_level: INFO
+  log_level: DEBUG

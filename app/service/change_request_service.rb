@@ -13,9 +13,13 @@ module Sinatra
 
             datafile = params[:data]
             fullpath = "#{baseDirectory}/#{params[:patientID]}/#{datafile[:filename]}"
+            WorkflowLogger.logger.info "WORKFLOW API | Change Request, processing upload #{fullpath} ..."
 
             # check if file already exists
-            #TODO
+            if File.exists?(fullpath)
+              status 400
+              body TransactionMessage.new('FAILURE', "File already exists" )
+            end
 
             # need to create directory if it doesn't exist
             dirname = File.dirname(fullpath)
@@ -33,6 +37,8 @@ module Sinatra
             datafile = params[:data]
             diskfile.write(datafile[:tempfile].read)
             diskfile.close
+            WorkflowLogger.logger.info "WORKFLOW API | Change Request, file upload completed successfully"
+            status 200
             return "The file was successfully uploaded!"
         end
 

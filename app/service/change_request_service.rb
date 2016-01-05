@@ -19,6 +19,7 @@ module Sinatra
             if File.exists?(fullpath)
               status 400
               body TransactionMessage.new('FAILURE', "File already exists" )
+              # return
             end
 
             # need to create directory if it doesn't exist

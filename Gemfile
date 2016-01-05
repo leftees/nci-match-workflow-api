@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+gem "codeclimate-test-reporter"
+gem "rake"
+
 # Used by the workflow api
 gem 'sinatra', '1.4.6'
 gem 'sinatra-contrib', '1.4.6'
@@ -18,4 +21,5 @@ group :test do
   gem 'simplecov', '0.10.0'
   gem 'simplecov-json', '0.2'
   gem 'simplecov-rcov', '0.2.3'
+  gem "codeclimate-test-reporter"
 end

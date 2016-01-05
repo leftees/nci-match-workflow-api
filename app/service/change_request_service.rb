@@ -15,11 +15,10 @@ module Sinatra
             WorkflowLogger.logger.info "WORKFLOW API | Change Request, processing upload #{fullpath} ..."
 
             # check if file already exists
-            if File.exists?(fullpath)
+            if File.exist?(fullpath)
               WorkflowLogger.logger.info "WORKFLOW API | Change Request, ERROR File #{fullpath} already exists, 400"
+              body TransactionMessage.new('FAILURE', "File #{params[:patientID]}/#{datafile[:filename]} already exists").to_json
               halt 400
-              body TransactionMessage.new('FAILURE', "File #{params[:patientID]}/#{datafile[:filename]} already exists" )
-              # return
             end
 
             # need to create directory if it doesn't exist
@@ -58,8 +57,8 @@ module Sinatra
             return filelist.to_json
           else
             WorkflowLogger.logger.info "WORKFLOW API | Change Request, ERROR Patient #{fullpath} does not exist, 404"
-            halt 404
-            body TransactionMessage.new('FAILURE', "PatientID #{params[:patientID]} does not exist" )
+            status 404
+            body TransactionMessage.new('FAILURE', "PatientID #{params[:patientID]} does not exist").to_json
           end
         end
 
@@ -71,8 +70,8 @@ module Sinatra
             return send_file fullpath, :disposition => :attachment
           else
             WorkflowLogger.logger.info "WORKFLOW API | Change Request, ERROR Patient file #{fullpath} does not exist, 404"
-            halt 404
-            body TransactionMessage.new('FAILURE', "Filename for that PatientID #{params[:patientID]}/#{params[:filename]} does not exist" )
+            status 404
+            body TransactionMessage.new('FAILURE', "Filename for that PatientID #{params[:patientID]}/#{params[:filename]} does not exist").to_json
           end
         end
 

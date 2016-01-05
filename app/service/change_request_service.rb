@@ -41,12 +41,12 @@ module Sinatra
             return "The file was successfully uploaded!"
         end
 
-        service.get '/changerequest/info' do
-          content_type :json
-          version = Version.instance
-          WorkflowLogger.logger.info "WORKFLOW API | Returning version '#{version.to_json}' to remote host."
-          version.to_json
-        end
+        # service.get '/changerequest/info' do
+        #   content_type :json
+        #   version = Version.instance
+        #   WorkflowLogger.logger.info "WORKFLOW API | Returning version '#{version.to_json}' to remote host."
+        #   version.to_json
+        # end
 
         service.get '/changerequest/:patientID' do
           content_type :json

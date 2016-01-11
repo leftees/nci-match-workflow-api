@@ -2,7 +2,7 @@ module Sinatra
   module WorkflowApi
     module ChangeRequestService
       require 'sinatra/base'
-      class ChangeRequest < Sinatra::Base
+      # class ChangeRequest < Sinatra::Base
       def self.registered(service)
 
         baseDirectory = "changerequest"
@@ -76,7 +76,7 @@ module Sinatra
         end
 
       end
-      end
+      # end
 
     end
   end

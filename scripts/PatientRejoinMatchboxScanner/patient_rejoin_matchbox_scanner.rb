@@ -92,25 +92,38 @@ begin
     end
   end
 
-  if eligible_patients['patient_sequence_numbers'].size > 0
-    logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients['patient_sequence_numbers']} eligible to rejoin Matchbox ...")
-    ecog_api = EcogAPIClient.new(cl.config)
-    ecog_api.send_patient_eligible_for_rejoin(eligible_patients['patient_sequence_numbers'])
-    logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients['patient_sequence_numbers']} eligible to rejoin Matchbox complete.")
+  if clh.options[:print].nil?
+    if eligible_patients['patient_sequence_numbers'].size > 0
+      logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients['patient_sequence_numbers']} eligible to rejoin Matchbox ...")
+      ecog_api = EcogAPIClient.new(cl.config)
+      ecog_api.send_patient_eligible_for_rejoin(eligible_patients['patient_sequence_numbers'])
+      logger.info("SCANNER | Sending ECOG patient(s) #{eligible_patients['patient_sequence_numbers']} eligible to rejoin Matchbox complete.")
 
-    eligible_patients['patient_docs'].each do |patient_doc|
-      logger.info("SCANNER | Adding/Updating patient #{patient_doc['patientSequenceNumber']} rejoin trigger #{patient_doc['patientRejoinTriggers'][patient_doc['patientRejoinTriggers'].size - 1]} ...")
-      patient_doc['patientRejoinTriggers'][patient_doc['patientRejoinTriggers'].size - 1]['dateSentToECOG'] = DateTime.now
-      result = dao.update(patient_doc)
-      if result.n == 1
-        logger.info("SCANNER | Adding patient rejoin trigger for patient #{patient_doc['patientSequenceNumber']} complete.")
-      else
-        logger.info("SCANNER | Failed to add patient rejoin trigger for patient #{patient_doc['patientSequenceNumber']} complete.")
+      eligible_patients['patient_docs'].each do |patient_doc|
+        logger.info("SCANNER | Adding/Updating patient #{patient_doc['patientSequenceNumber']} rejoin trigger #{patient_doc['patientRejoinTriggers'][patient_doc['patientRejoinTriggers'].size - 1]} ...")
+        patient_doc['patientRejoinTriggers'][patient_doc['patientRejoinTriggers'].size - 1]['dateSentToECOG'] = DateTime.now
+        result = dao.update(patient_doc)
+        if result.n == 1
+          logger.info("SCANNER | Adding patient rejoin trigger for patient #{patient_doc['patientSequenceNumber']} complete.")
+        else
+          logger.info("SCANNER | Failed to add patient rejoin trigger for patient #{patient_doc['patientSequenceNumber']} complete.")
+        end
       end
+    else
+      logger.info('SCANNER | No patients were found to be eligible to rejoin Matchbox.')
     end
   else
-    logger.info('SCANNER | No patients were found to be eligible to rejoin Matchbox.')
+    logger.info('SCANNER | Print mode was detected so logging all patient(s) eligible for rejoin ...')
+    if eligible_patients['patient_sequence_numbers'].size > 0
+      eligible_patients['patient_docs'].each do |patient_doc|
+        logger.info("SCANNER | Patient #{patient_doc['patientSequenceNumber']} is eligible to rejoin Matchbox.")
+      end
+    else
+      logger.info('SCANNER | No patients were found to be eligible to rejoin Matchbox.')
+    end
   end
+
+
 rescue => error
   logger.error("SCANNER | Failed to complete scan because an exception was thrown. Message: '#{error}'")
   logger.error 'SCANNER | Printing backtrace:'

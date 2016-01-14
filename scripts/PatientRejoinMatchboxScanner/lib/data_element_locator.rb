@@ -3,6 +3,12 @@ class DataElementLocator
     return biopsies[biopsies.size() - 1] if !biopsies.nil? && biopsies.size() > 0
   end
 
+  def self.get_specimen_received_message(biopsy)
+    biopsy['mdAndersonMessages'].each do |mda_message|
+      return mda_message if mda_message['message'] == 'SPECIMEN_RECEIVED'
+    end
+  end
+
   def self.get_latest_next_generation_sequence(next_generation_sequences)
     return next_generation_sequences[next_generation_sequences.size() - 1] if !next_generation_sequences.nil? && next_generation_sequences.size() > 0
   end

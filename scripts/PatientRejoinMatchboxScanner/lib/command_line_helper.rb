@@ -20,6 +20,10 @@ class CommandLineHelper
       opts.on('-e', '--environment environment', 'The mode to run the script.') do |environment|
         options[:environment] = environment
       end
+
+      opts.on('-p', '--print', 'Print out a list of patient(s) eligible for rejoin.') do
+        options[:print] = true
+      end
     end
 
     begin

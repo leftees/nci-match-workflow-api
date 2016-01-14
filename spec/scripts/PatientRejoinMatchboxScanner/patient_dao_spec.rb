@@ -33,6 +33,10 @@ class PatientCreator
                   'ionReporterResults' => {
                       'jobName' => "jobName#{i}"
                   }
+              }],
+              'mdAndersonMessages' => [{
+                      'reportedDate' => Time.now.utc,
+                      'message' => 'SPECIMEN_RECEIVED'
               }]
           }]
       })
@@ -47,7 +51,26 @@ class PatientCreator
     patients.push({
         'patientSequenceNumber' => '123',
         'currentPatientStatus' => 'OFF_TRIAL_NO_TA_AVAILABLE',
-        'currentStepNumber' => '2'
+        'currentStepNumber' => '2',
+        'biopsies' => [
+            {
+                'nextGenerationSequences' => [
+                    {
+                        'status' => 'CONFIRMED',
+                        'ionReporterResults' => { 'jobName' => 'jobName456' }
+                    }
+                ],
+                'mdAndersonMessages' => [
+                    {
+
+                        'reportedDate' => Time.now.utc,
+                        'message' => 'SPECIMEN_RECEIVED'
+
+                    }
+                ]
+
+            }
+        ]
     })
 
     # Patient does not have a biopsy exist
@@ -63,9 +86,20 @@ class PatientCreator
         'patientSequenceNumber' => '345',
         'currentPatientStatus' => 'OFF_TRIAL_NO_TA_AVAILABLE',
         'currentStepNumber' => '0',
-        'biopsies' => [{
-            'nextGenerationSequences' => []
-        }]
+        'biopsies' => [
+            {
+                'nextGenerationSequences' => [],
+                'mdAndersonMessages' => [
+                    {
+
+                        'reportedDate' => Time.now.utc,
+                        'message' => 'SPECIMEN_RECEIVED'
+
+                    }
+                ]
+
+            }
+        ]
     })
 
     # Patient variant report is pending confirmation
@@ -73,14 +107,48 @@ class PatientCreator
         'patientSequenceNumber' => '456',
         'currentPatientStatus' => 'OFF_TRIAL_NO_TA_AVAILABLE',
         'currentStepNumber' => '0',
-        'biopsies' => [{
-            'nextGenerationSequences' => [{
-                'status' => 'PENDING',
-                'ionReporterResults' => {
-                'jobName' => 'jobName456'
-                }
-            }]
-        }]
+        'biopsies' => [
+            {
+                'nextGenerationSequences' => [
+                    {
+                        'status' => 'PENDING',
+                        'ionReporterResults' => { 'jobName' => 'jobName456' }
+                    }
+                ],
+                'mdAndersonMessages' => [
+                    {
+
+                        'reportedDate' => Time.now.utc,
+                        'message' => 'SPECIMEN_RECEIVED'
+
+                    }
+                ]
+
+            }
+        ]
+    })
+
+    # Patient specimen received date is beyond 6 months
+    patients.push({
+        'patientSequenceNumber' => '567',
+        'currentPatientStatus' => 'OFF_TRIAL_NO_TA_AVAILABLE',
+        'currentStepNumber' => '0',
+        'biopsies' => [
+            {
+                'nextGenerationSequences' => [
+                    {
+                        'status' => 'CONFIRMED',
+                        'ionReporterResults' => { 'jobName' => 'jobName456' }
+                    }
+                ],
+                'mdAndersonMessages' => [
+                    {
+                        'reportedDate' => (DateTime.now << 6).to_time,
+                        'message' => 'SPECIMEN_RECEIVED'
+                    }
+                ]
+            }
+        ]
     })
 
     patients

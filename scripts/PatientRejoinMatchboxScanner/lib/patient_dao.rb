@@ -34,7 +34,7 @@ class PatientDao
 
       specimen_received_message = DataElementLocator.get_specimen_received_message(biopsy)
       next if specimen_received_message.nil?
-      cut_off_date = DateTime.now - 60
+      cut_off_date = DateTime.now << 6
       next if specimen_received_message['reportedDate'].utc < cut_off_date.to_time.utc
 
       next_generation_sequence = DataElementLocator.get_latest_next_generation_sequence(biopsy['nextGenerationSequences'])

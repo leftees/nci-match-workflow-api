@@ -4,8 +4,10 @@ class DataElementLocator
   end
 
   def self.get_specimen_received_message(biopsy)
-    biopsy['mdAndersonMessages'].each do |mda_message|
-      return mda_message if mda_message['message'] == 'SPECIMEN_RECEIVED'
+    if !biopsy.nil?
+      biopsy['mdAndersonMessages'].each do |mda_message|
+        return mda_message if mda_message['message'] == 'SPECIMEN_RECEIVED'
+      end
     end
   end
 

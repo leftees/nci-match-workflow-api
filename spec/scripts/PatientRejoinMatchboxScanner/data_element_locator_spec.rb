@@ -32,6 +32,26 @@ RSpec.describe DataElementLocator, '.get_latest_biopsy' do
   end
 end
 
+# Test the DataElementLocator get_specimen_received_message method
+
+RSpec.describe DataElementLocator, '.get_specimen_received_message' do
+  context 'with a nil value' do
+    it 'should return a nil value' do
+      expect(DataElementLocator.get_specimen_received_message(nil)).to be_nil
+    end
+  end
+
+  context 'with biopsy value' do
+    it 'should return the specimen received message' do
+      message_date = Time.now
+      biopsy = { 'mdAndersonMessages' => [ { 'reportedDate' => message_date, 'message' => 'SPECIMEN_RECEIVED' } ] }
+      specimen_received_message = DataElementLocator.get_specimen_received_message(biopsy)
+      expect(specimen_received_message['reportedDate']).to eq(message_date)
+    end
+  end
+end
+
+
 # Test the DataElementLocator get_latest_next_generation_sequence method
 
 RSpec.describe DataElementLocator, '.get_latest_next_generation_sequence' do

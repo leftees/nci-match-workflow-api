@@ -1,3 +1,1 @@
-class RejoinError < StandardError
-
-end
+class RejoinError < StandardError ; end

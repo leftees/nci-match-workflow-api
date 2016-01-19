@@ -4,7 +4,9 @@ require 'sinatra/reloader' if development?
 require 'sinatra/base'
 require 'sinatra/config_file'
 
+require "#{File.dirname(__FILE__)}/error/not_found_error"
 require "#{File.dirname(__FILE__)}/error/rejoin_error"
+require "#{File.dirname(__FILE__)}/model/dashboard_statistics"
 require "#{File.dirname(__FILE__)}/model/patient"
 require "#{File.dirname(__FILE__)}/model/patient_assignment_queue_message"
 require "#{File.dirname(__FILE__)}/model/transaction_message"
@@ -36,7 +38,8 @@ class WorkflowApi < Sinatra::Base
   before do
     headers 'Access-Control-Allow-Origin' => '*'
     headers 'Access-Control-Allow-Headers' => 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-    headers 'Access-Control-Allow-Methods' => 'GET'
+    headers 'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS'
+    halt 200 if request.request_method == 'OPTIONS'
   end
 
   register Sinatra::WorkflowApi::ECOGMessagingService

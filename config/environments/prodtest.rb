@@ -10,4 +10,4 @@ Bundler.require(Sinatra::Base.environment)  # load all the environment specific 
 configure { WorkflowApiConfig.load!(File.dirname(__FILE__) + '/../workflow-api.yml', :prodtest) }
 configure { Mongoid.load!('/local/content/ncimatch/conf/ruby/mongoid-match-prodtest.yml', :prodtest) }
 configure { RabbitMQ.load!('/local/content/ncimatch/conf/ruby/rabbitmq-match-prodtest.yml', :prodtest) }
-
+configure { FileSystemConfig.load!('/local/content/ncimatch/conf/ruby/filesystem-config-prodtest.yml', :prodtest) }

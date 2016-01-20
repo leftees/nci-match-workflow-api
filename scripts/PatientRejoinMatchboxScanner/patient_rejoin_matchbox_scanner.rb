@@ -79,7 +79,11 @@ begin
           end
         end
 
-        eligible_patients['patient_docs'].push(off_trial_patients['off_trial_patients_docs'][index]) if is_eligible
+        if is_eligible
+          eligible_patients['patient_docs'].push(off_trial_patients['off_trial_patients_docs'][index])
+        else
+          eligible_patients['patient_sequence_numbers'].delete(off_trial_patient[:patient_sequence_number])
+        end
       else
         logger.info("SCANNER | Simulation did not find a matching arm for patient #{off_trial_patient}.");
       end
@@ -122,8 +126,6 @@ begin
       logger.info('SCANNER | No patients were found to be eligible to rejoin Matchbox.')
     end
   end
-
-
 rescue => error
   logger.error("SCANNER | Failed to complete scan because an exception was thrown. Message: '#{error}'")
   logger.error 'SCANNER | Printing backtrace:'

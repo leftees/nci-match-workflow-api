@@ -3,6 +3,7 @@ require 'mongoid'
 
 require "#{File.dirname(__FILE__)}/../../app/queue/rabbit_mq"
 require "#{File.dirname(__FILE__)}/../../app/util/workflow_api_config"
+require "#{File.dirname(__FILE__)}/../../app/util/filesystem_config"
 
 Bundler.require(:default)                   # load all the default gems
 Bundler.require(Sinatra::Base.environment)  # load all the environment specific gems

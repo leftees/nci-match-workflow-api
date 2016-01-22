@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem "codeclimate-test-reporter"
 gem "rake"
 
 # Used by the workflow api

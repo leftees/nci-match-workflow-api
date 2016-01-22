@@ -16,8 +16,10 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
+require 'codeclimate-test-reporter'
+SimpleCov.add_filter 'vendor'
+SimpleCov.formatters = []
+SimpleCov.start CodeClimate::TestReporter.configuration.profile
 
 require 'webmock/rspec'
 require 'rack/test'
